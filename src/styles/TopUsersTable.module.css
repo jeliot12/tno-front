@@ -1,0 +1,28 @@
+
+  
+  .loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    color: #fff;
+    font-size: 1.5rem;
+    padding: 2rem;
+  }
+  
+  .spinner {
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  
+  .error {
+    color: #ff4444;
+    padding: 2rem;
+    text-align: center;
+    font-size: 1.2rem;
+  }
+  
