@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getUserLeaders } from "../../http/userApi";
+import { getUserLeaders } from "../../http/UserAPI";
 import { Navigation } from "../../components/Navigation/Navigation";
 import styles from '../../styles/TopUsersTable.module.css';
 import { FaCoins, FaMedal } from 'react-icons/fa';
