@@ -2,14 +2,14 @@ import { Navigation } from "../components/Navigation/Navigation";
 import {useState, useEffect} from 'react';
 import { getUserLeaders } from "../http/UserAPI";
 import { trophy, goldM, silverM, bronzeM} from "../assets/images";
-import styles from '../styles/TopUsersTable.module.css';
-import { FaCoins } from 'react-icons/fa';
+// import styles from '../styles/TopUsersTable.module.css';
+// import { FaCoins } from 'react-icons/fa';
 
 
 function Leaders(){
-    const [topUsers, setTopUsers] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    // const [topUsers, setTopUsers] = useState([]);
+    // const [loading, setLoading] = useState(true);
+    // const [error, setError] = useState(null);
     const [activeTab, setActiveTab] = useState('Сквады');
 
     // Данные для топа игроков
@@ -45,33 +45,33 @@ function Leaders(){
     //       return <div className={styles.empty}>Нет данных для отображения</div>;
     //   }
     // }
-    if (loading) {
-      return <div className={styles.loading}>Loading... <FaCoins className={styles.spinner} /></div>;
-    }
+    // if (loading) {
+    //   return <div className={styles.loading}>Loading... <FaCoins className={styles.spinner} /></div>;
+    // }
   
-    if (error) {
-      return <div className={styles.error}>Error: {error}</div>;
-    }
-    // const playersData = [
-    //   { rank: 1, name: 'TNO community', score: 100000, icon: 'bg-black', medal: '🥇' },
-    //   { rank: 2, name: 'РоманЧИК', score: 50000, icon: 'bg-gradient-to-r from-pink-500 to-purple-500', medal: '🥈' },
-    //   { rank: 3, name: 'Mara', score: 50000, icon: 'bg-blue-500', medal: '🥉' },
-    //   { rank: 4, name: 'Durov', score: 10785, icon: 'bg-gray-500' },
-    //   { rank: 5, name: 'Etoya007', score: 10785, icon: 'bg-green-500', highlighted: true },
-    // ];
+    // if (error) {
+    //   return <div className={styles.error}>Error: {error}</div>;
+    // }
+    const playersData = [
+      { rank: 1, username: 'TNO community', balance: 100000},
+      { rank: 2, username: 'РоманЧИК', balance: 50000},
+      { rank: 3, username: 'Mara', balance: 50000},
+      { rank: 4, username: 'Durov', balance: 10785},
+      { rank: 5, username: 'Etoya007', balance: 10785},
+    ];
 
     // Данные для топа сквадов
     const squadsData = [
-      { rank: 1, name: 'Squad Alpha', score: 200000, icon: 'bg-red-500', medal: '🥇' },
-      { rank: 2, name: 'Squad Beta', score: 150000, icon: 'bg-yellow-500', medal: '🥈' },
-      { rank: 3, name: 'Squad Gamma', score: 120000, icon: 'bg-green-500', medal: '🥉' },
-      { rank: 4, name: 'Squad Delta', score: 100000, icon: 'bg-blue-500' },
-      { rank: 5, name: 'Squad Epsilon', score: 90000, icon: 'bg-purple-500' },
+      { rank: 1, username: 'Squad Alpha', balance: 200000},
+      { rank: 2, username: 'Squad Beta', balance: 150000},
+      { rank: 3, username: 'Squad Gamma', balance: 120000},
+      { rank: 4, username: 'Squad Delta', balance: 100000},
+      { rank: 5, username: 'Squad Epsilon', balance: 90000},
     ];
 
 
     // Выбор данных в зависимости от активной вкладки
-    const data = activeTab === 'Сквады' ? squadsData : topUsers;
+    const data = activeTab === 'Сквады' ? squadsData : playersData;
     return (
         <div className='min-h-screen bg-gradient-main px-4 flex flex-col items-center text-white font-medium'>
             <div className='absolute inset-0 h-1/2 bg-gradient-overlay z-0'></div>
@@ -113,7 +113,7 @@ function Leaders(){
                     <div className="bg-[#1d1d1d] rounded-lg p-2 space-y-4 max-h-96">
                       {data.map((user, index) => (
                         <div
-                          key={user.id}
+                          key={user.rank}
                           className={`flex items-center justify-between p-2 rounded-lg`}
                         >
                           <div className="flex items-center space-x-3">
@@ -141,11 +141,11 @@ function Leaders(){
                           </div> */}
                           <div className="ml-auto text-sm">
                               {
-                              index === 0 ? <img src={goldM} /> :
-                              index === 1 ? <img src={silverM} /> :
-                              index === 2 ? <img src={bronzeM} /> : ""
+                              user.rank === 1 ? <img src={goldM} /> :
+                              user.rank === 2 ? <img src={silverM} /> :
+                              user.rank === 3 ? <img src={bronzeM} /> : ""
                               }
-                              {index > 2 ? <span className="text-white font-light">#{index + 1}</span> : ""}
+                              {user.rank > 3 ? <span className="text-white font-light">#{index + 1}</span> : ""}
                           </div>
                         </div>
                       ))}
