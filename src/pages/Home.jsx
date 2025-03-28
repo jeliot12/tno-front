@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import Arrow from '../assets/Icon/Arrow'
-import { highVoltage, rocket, tnocoin } from '../assets/images'
+// import Arrow from '../assets/Icon/Arrow'
+import { highVoltage} from '../assets/images'
 import { Navigation } from '../components/Navigation/Navigation'
 import { getBalanceUser, saveBalance } from '../http/userApi'
 
@@ -97,12 +97,6 @@ function Home() {
 
       return () => clearInterval(interval); // Очистка интервала при размонтировании
     }, []);
-
-
-
-    const test = () => {
-      console.log("test")
-    }
   
     return (
       <div className='bg-gradient-main min-h-screen px-4 flex flex-col items-center text-white font-medium'>
