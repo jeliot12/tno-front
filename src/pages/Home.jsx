@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 // import Arrow from '../assets/Icon/Arrow'
 import { highVoltage} from '../assets/images'
 import { Navigation } from '../components/Navigation/Navigation'
-import { getBalanceUser, saveBalance } from '../http/userApi'
+import { getBalanceUser, saveBalance } from '../http/UserAPI'
 
 
 function Home() {

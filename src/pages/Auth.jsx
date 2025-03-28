@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react';
-import { registration, login, getBalanceUser } from '../http/userApi';
+import { registration, login, getBalanceUser } from '../http/UserAPI';
 import WebApp from '@twa-dev/sdk';
 
 
