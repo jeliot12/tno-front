@@ -57,7 +57,6 @@ function Leaders(){
       { rank: 2, username: 'РоманЧИК', balance: 50000},
       { rank: 3, username: 'Mara', balance: 50000},
       { rank: 4, username: 'Durov', balance: 10785},
-      { rank: 5, username: 'Etoya007', balance: 10785},
     ];
 
     // Данные для топа сквадов
@@ -66,7 +65,6 @@ function Leaders(){
       { rank: 2, username: 'Squad Beta', balance: 150000},
       { rank: 3, username: 'Squad Gamma', balance: 120000},
       { rank: 4, username: 'Squad Delta', balance: 100000},
-      { rank: 5, username: 'Squad Epsilon', balance: 90000},
     ];
 
 
