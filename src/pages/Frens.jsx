@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Navigation } from "../components/Navigation/Navigation";
-import { getRefLinkUser } from '../http/userApi';
+import { getRefLinkUser } from '../http/UserAPI';
 
 function Frens() {
     const [copying, setCopying] = useState(false);

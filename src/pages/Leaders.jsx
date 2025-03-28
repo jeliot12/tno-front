@@ -1,6 +1,6 @@
 import { Navigation } from "../components/Navigation/Navigation";
 import {useState, useEffect} from 'react';
-import { getUserLeaders } from "../http/userAPI";
+import { getUserLeaders } from "../http/UserAPI";
 import { trophy, goldM, silverM, bronzeM} from "../assets/images";
 import styles from '../styles/TopUsersTable.module.css';
 import { FaCoins } from 'react-icons/fa';
@@ -40,11 +40,11 @@ function Leaders(){
       fetchTopUsers();
     }, []);
     // Рендер содержимого
-    const renderTable = () => {
-        if (topUsers.length === 0) {
-          return <div className={styles.empty}>Нет данных для отображения</div>;
-      }
-    }
+    // const renderTable = () => {
+    //     if (topUsers.length === 0) {
+    //       return <div className={styles.empty}>Нет данных для отображения</div>;
+    //   }
+    // }
     if (loading) {
       return <div className={styles.loading}>Loading... <FaCoins className={styles.spinner} /></div>;
     }
@@ -52,13 +52,13 @@ function Leaders(){
     if (error) {
       return <div className={styles.error}>Error: {error}</div>;
     }
-    const playersData = [
-      { rank: 1, name: 'TNO community', score: 100000, icon: 'bg-black', medal: '🥇' },
-      { rank: 2, name: 'РоманЧИК', score: 50000, icon: 'bg-gradient-to-r from-pink-500 to-purple-500', medal: '🥈' },
-      { rank: 3, name: 'Mara', score: 50000, icon: 'bg-blue-500', medal: '🥉' },
-      { rank: 4, name: 'Durov', score: 10785, icon: 'bg-gray-500' },
-      { rank: 5, name: 'Etoya007', score: 10785, icon: 'bg-green-500', highlighted: true },
-    ];
+    // const playersData = [
+    //   { rank: 1, name: 'TNO community', score: 100000, icon: 'bg-black', medal: '🥇' },
+    //   { rank: 2, name: 'РоманЧИК', score: 50000, icon: 'bg-gradient-to-r from-pink-500 to-purple-500', medal: '🥈' },
+    //   { rank: 3, name: 'Mara', score: 50000, icon: 'bg-blue-500', medal: '🥉' },
+    //   { rank: 4, name: 'Durov', score: 10785, icon: 'bg-gray-500' },
+    //   { rank: 5, name: 'Etoya007', score: 10785, icon: 'bg-green-500', highlighted: true },
+    // ];
 
     // Данные для топа сквадов
     const squadsData = [
