@@ -35,3 +35,8 @@ export const getRefLinkUser = async (telegramId) => {
     localStorage.setItem('referralLink', data.user.referralLink)
     return data.user.referralLink
 }
+
+export const checkSubscribe = async (userId) => {
+    const {data} = await $host.post('check-subscription', {userId});
+    return data
+}

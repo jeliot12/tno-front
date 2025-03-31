@@ -71,3 +71,7 @@ body {
 .first-tab {
   background-image: url('assets/images/goldMedal.png');
 }
+
+.coinBtn {
+  touch-action: manipulation;
+}

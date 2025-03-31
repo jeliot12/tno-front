@@ -2,19 +2,37 @@ import { useState } from 'react';
 import { Navigation } from "../components/Navigation/Navigation";
 import PropTypes from 'prop-types';
 import { Check, Users, Wallet } from 'lucide-react';
+import {checkSubscribe} from '../http/UserAPI';
 
-function TaskItem({ Icon, title, reward, action, completed }) {
+function TaskItem({ Icon, title, id, reward, action, completed }) {
   const [isCompleted, setIsCompleted] = useState(completed);
 
-  const handleAction = () => {
-    if (action === 'Начать') {
-      alert(`Starting task: ${title}`);
+  const checkUserSubcription = async (userId)=> {
+    const data = await checkSubscribe(userId);
+    if (data.isSubscribed == true){
+      setIsCompleted(true);
+    }else{
+      console.log("user is not subs");
     }
-    setIsCompleted(true);
+  }
+
+  const handleAction = () => {
+    const channelUrl = 'https://t.me/tno_community';
+    const userId = 1083689910;
+    
+    if (action === 'Начать') {
+      if (id === "substno"){
+        window.open(channelUrl, '_blank');
+        setTimeout(()=>{
+          checkUserSubcription(userId)
+        }, 5000);
+      }
+    }
   };
 
   return (
-      <li className="flex items-center justify-between py-4 px-6 border-b-2 border-b-[#1f1f1f]">
+    // border-b-2 border-b-[#1f1f1f]
+      <li className="flex items-center justify-between py-4 px-6">
         <div className="flex items-center space-x-4">
           <div className="p-2 bg-neutral-800 rounded-lg">
             <Icon size={20} color="white" />
@@ -44,6 +62,7 @@ function TaskItem({ Icon, title, reward, action, completed }) {
 TaskItem.propTypes = {
   Icon: PropTypes.elementType.isRequired,
   title: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
   reward: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
   completed: PropTypes.bool.isRequired,
@@ -61,11 +80,12 @@ function Earns() {
                   <p className="text-2xl text-[#a6a6a6] mb-6">Получайте монеты за выполнение заданий</p>
                     <div className="container h-full">
                         {/* Task List */}
-                        <ul className='bg-[#1a1a1a] rounded-t-lg h-dvh'>
+                        <ul className='bg-[#1a1a1a] rounded-lg h-max'>
                         <li className='mb-1'>
                             <TaskItem
                             Icon={Users}
                             title="Пригласить 10 друзей"
+                            id="frens"
                             reward="+ 5,000 TNO"
                             action="Начать"
                             completed={false}
@@ -75,6 +95,7 @@ function Earns() {
                         <TaskItem
                             Icon={Wallet}
                             title="Подписаться на канал"
+                            id="substno"
                             reward="+ 3,000 TNO"
                             action="Начать"
                             completed={false}
@@ -84,6 +105,7 @@ function Earns() {
                         <TaskItem
                             Icon={Wallet}
                             title="Подписаться на канал"
+                            id="substno"
                             reward="+ 3,000 TNO"
                             action="Начать"
                             completed={false}
@@ -93,6 +115,7 @@ function Earns() {
                         <TaskItem
                             Icon={Wallet}
                             title="Подписаться на канал"
+                            id="substno"
                             reward="+ 3,000 TNO"
                             action="Начать"
                             completed={false}
@@ -102,6 +125,7 @@ function Earns() {
                         <TaskItem
                             Icon={Wallet}
                             title="Подписаться на канал"
+                            id="substno"
                             reward="+ 3,000 TNO"
                             action="Начать"
                             completed={false}
@@ -111,6 +135,7 @@ function Earns() {
                         <TaskItem
                             Icon={Wallet}
                             title="Подписаться на канал"
+                            id="substno"
                             reward="+ 3,000 TNO"
                             action="Начать"
                             completed={false}

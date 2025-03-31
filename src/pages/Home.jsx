@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-// import Arrow from '../assets/Icon/Arrow'
 import { highVoltage} from '../assets/images'
 import { Navigation } from '../components/Navigation/Navigation'
 import { getBalanceUser, saveBalance } from '../http/UserAPI'
@@ -47,32 +46,46 @@ function Home() {
     };
   
     const handleClick = (e) => {
-        if (energy - energyToReduce < 0) {
-          return;
-        }
-        
-        const rect = e.currentTarget.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        const newClickCount = clickCount + 1;
-        const newCoins = Number(points + pointsToAdd)
+      e.preventDefault();
+      if (energy - energyToReduce < 0) return;
+
+      const rect = e.currentTarget.getBoundingClientRect();
+      const newCoins = points + pointsToAdd;
+      const newClickCount = clickCount + e.touches.length;
+
+      // Обрабатываем каждое касание
+      Array.from(e.touches).forEach(touch => {
+          const x = touch.clientX - rect.left;
+          const y = touch.clientY - rect.top;
+          
+          setClicks(prev => [...prev, { 
+              id: Date.now() + Math.random(), 
+              x, 
+              y 
+          }]);
+      });
+
+      setClickCount(prev => prev + e.touches.length);
+      setPoints(prev => prev + (pointsToAdd * e.touches.length));
+      setEnergy(prev => Math.max(prev - (energyToReduce * e.touches.length), 0));
       
-        setClickCount(newClickCount);
-        setPoints(points + pointsToAdd);
-        setEnergy(energy - energyToReduce < 0 ? 0 : energy - energyToReduce);
-        setClicks([...clicks, { id: Date.now(), x, y }]);
-        localStorage.setItem('balance', newCoins);
-        // Синхронизируем с сервером каждый клик
-        if (newClickCount % 1 === 0) {
+      localStorage.setItem('balance', newCoins);
+      localStorage.setItem('energy', energy);
+      
+      if (newClickCount % 1 === 0) {
           syncWithServer(tg_id, newCoins.toString());
-        }
-    };
+      }
+  };
   
     const handleAnimationEnd = (id) => {
       setClicks((prevClicks) => prevClicks.filter(click => click.id !== id))
     };
   
     useEffect(()=> {
+      const savedEnergy = localStorage.getItem('energy');
+      if (savedEnergy) {
+        setEnergy(parseInt(savedEnergy, 10))
+      }
       const interval = setInterval(()=> {
         setEnergy((prevEnergy) => Math.min(prevEnergy + 1, 800));
       }, 1000);
@@ -109,9 +122,6 @@ function Home() {
   
           <div className='fixed top-0 left-0 w-full px-4 pt-8 z-10 flex flex-col items-center text-white'>
             <div className='w-full cursor-pointer'>
-              {/* <div className='bg-[#1f1f1f] text-center py-2 rounded-xl' onClick={test}>
-                <p className='text-lg'>TNO community <Arrow size={18} className="ml-0 mb-1 inline-block"/> </p>
-              </div> */}
             </div>
               <div className="w-full max-w-md bg-[#1E1E1E] rounded-2xl shadow-lg">
                 <div className="flex items-center justify-between p-4">
@@ -156,11 +166,11 @@ function Home() {
           </div>
 
           <div className='flex-grow flex items-center justify-center'>
-            <div className='relative mt-4 cursor-pointer coinBtn' onClick={handleClick}>
+            <div className='relative mt-4 cursor-pointer coinBtn' onTouchStart={handleClick}
+                onContextMenu={(e) => e.preventDefault()}>
               <div className="flex items-center justify-center w-64 h-64 bg-[#4a9be2] rounded-full border-2 border-[#3d3d3d] shadow-lg transition-transform duration-300 transform hover:scale-105 glow">
                 <h1 className="text-white text-6xl font-bold [text-shadow:_0_8px_8px_rgb(99_102_241_/_0.8)]">TNO</h1>
               </div>
-              {/* <img src={tnocoin} width={256} height={256} /> */}
               {clicks.map((click)=> (
                 <div
                 key={click.id}
