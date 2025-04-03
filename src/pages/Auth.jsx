@@ -1,73 +1,44 @@
-'use client'
-import { useEffect, useState } from 'react';
-import { registration, login, getBalanceUser } from '../http/UserAPI';
-import WebApp from '@twa-dev/sdk';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
+function Auth() {
+  const navigate = useNavigate();
 
+  useEffect(() => {
+    // Имитация загрузки (замените на реальную логику загрузки)
+    const timer = setTimeout(() => {
+        navigate('/home', { replace: true }); // Редирект на основную страницу
+    }, 3000); // 3 секунды загрузки
 
-function Auth () {
-    const uname = "emptygyry";
-    const tg_id = "31569431543";
-    // const ref = "REF_7E786767"
+    return () => clearTimeout(timer);
+  }, [navigate]);
 
-  
-    const handleAuth = async () => {
-      try {
-        const data = await login(tg_id)
-        console.log(data)
-      } catch (error) {
-        console.log(`Error: ${error}, register an account`)
-        const newData = await registration(tg_id, uname)
-        console.log(newData)
-      }
-    };
+  // загрузка реальных данных
 
-    const getCountCoin = async () => {
-        const data = await login(tg_id)
-        console.log(data);
-    }
+  // useEffect(() => {
+  //   // Пример загрузки данных
+  //   const loadData = async () => {
+  //     await fetchData(); // Ваша функция загрузки данных
+  //     navigate('/main');
+  //   };
+    
+  //   loadData();
+  // }, [navigate]);
 
-    const [userData, setUserData] = useState(null)
-    const [loading, setLoading] = useState(true)
-  
-    // Инициализация и получение данных пользователя
-    useEffect(() => {
-      // Инициализируем приложение Telegram
-      WebApp.ready()
-      
-      // Проверяем наличие данных пользователя
-      if (WebApp.initDataUnsafe.user) {
-        const tgUser = WebApp.initDataUnsafe.user
-        setUserData({
-          id: tgUser.id,
-          username: tgUser.username || 'Не указан',
-          isPremium: tgUser.is_premium ? 'Да' : 'Нет'
-        })
-      }
-      setLoading(false)
-    }, [])
+  return (
+    <div className="flex flex-col items-center justify-center h-screen bg-gradient-main text-white font-medium">
 
-    return (
-        <div className="min-h-screen bg-gradient-main px-4 flex flex-col items-center text-white font-medium">
-                    <button onClick={handleAuth}>Click me</button>
-                    <button onClick={getCountCoin}>Get Balance</button>
-                    {loading ? (
-                        <div>Загрузка данных...</div>
-                    ) : userData ? (
-                        <div className="user-data">
-                        <h2>Данные пользователя:</h2>
-                        <ul>
-                            <li>ID: {userData.id}</li>
-                            <li>Username: @{userData.username}</li>
-                            <li>Премиум: {userData.isPremium}</li>
-                        </ul>
-                        </div>
-                    ) : (
-                        <div>Данные пользователя недоступны</div>
-                    )}
-        </div>
-    )
+      <div className="relative">
+        <div className="h-24 w-24 rounded-full border-8 border-gray-200"></div>
+        <div className="absolute top-0 left-0 h-24 w-24 rounded-full border-8 border-blue-500 border-t-transparent animate-spin"></div>
+      </div>
+      <h1 className="mt-6 text-3xl font-bold text-white">Загружаем приложение</h1>
+      <p className="mt-2 text-white">Это займет всего несколько секунд</p>
+      <div className="mt-8 w-64 bg-gray-200 rounded-full h-2.5">
+        <div className="bg-blue-600 h-2.5 rounded-full animate-progress"></div>
+      </div>
+    </div>
+  );
 };
-
 
 export default Auth;

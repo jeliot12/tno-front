@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Navigation } from "../components/Navigation/Navigation";
 import { getRefLinkUser } from '../http/UserAPI';
+import withMobileCheck from '../components/withMobileCheck';
 
 function Frens() {
     const [copying, setCopying] = useState(false);
@@ -48,11 +49,11 @@ function Frens() {
                         {/* Левая часть с заголовком и подзаголовком */}
                         <div className="mb-4 md:mb-0">
                             <h2 className="text-4xl font-semibold mb-1">Пока никого</h2>
-                            <p className="text-sm">
-                            <h3 className="text-lg text-[#a6a6a6] font-semibold mt-1">Приглашайте друзей</h3>
-                            {' '}
-                            <h3 className="text-lg text-[#a6a6a6] font-semibold mb-1">и получайте больше TNO</h3>
-                            </p>
+                            <div className="text-sm">
+                                <h3 className="text-lg text-[#a6a6a6] font-semibold mt-1">Приглашайте друзей</h3>
+                                {' '}
+                                <h3 className="text-lg text-[#a6a6a6] font-semibold mb-1">и получайте больше TNO</h3>
+                            </div>
                         </div>
 
                         {/* Центральная часть с аватаром и информацией */}
@@ -80,4 +81,4 @@ function Frens() {
     )
 }
 
-export default Frens;
+export default withMobileCheck(Frens);

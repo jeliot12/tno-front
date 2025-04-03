@@ -3,6 +3,7 @@ import { Navigation } from "../components/Navigation/Navigation";
 import PropTypes from 'prop-types';
 import { Check, Users, Wallet } from 'lucide-react';
 import {checkSubscribe} from '../http/UserAPI';
+import withMobileCheck from '../components/withMobileCheck';
 
 function TaskItem({ Icon, title, id, reward, action, completed }) {
   const [isCompleted, setIsCompleted] = useState(completed);
@@ -81,66 +82,78 @@ function Earns() {
                     <div className="container h-full">
                         {/* Task List */}
                         <ul className='bg-[#1a1a1a] rounded-lg h-max'>
-                        <li className='mb-1'>
-                            <TaskItem
-                            Icon={Users}
-                            title="Пригласить 10 друзей"
-                            id="frens"
-                            reward="+ 5,000 TNO"
-                            action="Начать"
-                            completed={false}
-                            />
-                        </li>
-                        <li>
-                        <TaskItem
-                            Icon={Wallet}
-                            title="Подписаться на канал"
-                            id="substno"
-                            reward="+ 3,000 TNO"
-                            action="Начать"
-                            completed={false}
-                        />
-                        </li>
-                        <li>
-                        <TaskItem
-                            Icon={Wallet}
-                            title="Подписаться на канал"
-                            id="substno"
-                            reward="+ 3,000 TNO"
-                            action="Начать"
-                            completed={false}
-                        />
-                        </li>
-                        <li>
-                        <TaskItem
-                            Icon={Wallet}
-                            title="Подписаться на канал"
-                            id="substno"
-                            reward="+ 3,000 TNO"
-                            action="Начать"
-                            completed={false}
-                        />
-                        </li>
-                        <li>
-                        <TaskItem
-                            Icon={Wallet}
-                            title="Подписаться на канал"
-                            id="substno"
-                            reward="+ 3,000 TNO"
-                            action="Начать"
-                            completed={false}
-                        />
-                        </li>
-                        <li>
-                        <TaskItem
-                            Icon={Wallet}
-                            title="Подписаться на канал"
-                            id="substno"
-                            reward="+ 3,000 TNO"
-                            action="Начать"
-                            completed={false}
-                        />
-                        </li>
+                          <li className='mb-1'>
+                            <ul>
+                              <TaskItem
+                                Icon={Users}
+                                title="Пригласить 10 друзей"
+                                id="frens"
+                                reward="+ 5,000 TNO"
+                                action="Начать"
+                                completed={false}
+                                />
+                            </ul>
+                          </li>
+                          <li>
+                            <ul>
+                              <TaskItem
+                                Icon={Wallet}
+                                title="Подписаться на канал"
+                                id="substno"
+                                reward="+ 3,000 TNO"
+                                action="Начать"
+                                completed={false}
+                              />
+                            </ul>
+                          </li>
+                          <li>
+                            <ul>
+                              <TaskItem
+                                Icon={Wallet}
+                                title="Подписаться на канал"
+                                id="substno"
+                                reward="+ 3,000 TNO"
+                                action="Начать"
+                                completed={false}
+                              />
+                            </ul>
+                          </li>
+                          <li>
+                            <ul>
+                              <TaskItem
+                                Icon={Wallet}
+                                title="Подписаться на канал"
+                                id="substno"
+                                reward="+ 3,000 TNO"
+                                action="Начать"
+                                completed={false}
+                              />
+                            </ul>
+                          </li>
+                          <li>
+                            <ul>
+                              <TaskItem
+                                Icon={Wallet}
+                                title="Подписаться на канал"
+                                id="substno"
+                                reward="+ 3,000 TNO"
+                                action="Начать"
+                                completed={false}
+                              />
+                            </ul>
+                          </li>
+                          <li>
+                            <ul>
+                              <TaskItem
+                                Icon={Wallet}
+                                title="Подписаться на канал"
+                                id="substno"
+                                reward="+ 3,000 TNO"
+                                action="Начать"
+                                completed={false}
+                              />
+                            </ul>
+                          </li>
                         </ul>
                     </div>
                 </div>
@@ -152,4 +165,4 @@ function Earns() {
     )
 }
 
-export default Earns;
+export default withMobileCheck(Earns);

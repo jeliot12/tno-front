@@ -1,14 +1,14 @@
-import { useEffect, useState } from 'react'
-import { highVoltage} from '../assets/images'
-import { Navigation } from '../components/Navigation/Navigation'
-import { getBalanceUser, saveBalance } from '../http/UserAPI'
+import { useEffect, useState } from 'react';
+import { highVoltage} from '../assets/images';
+import { Navigation } from '../components/Navigation/Navigation';
+import { getBalanceUser, saveBalance } from '../http/UserAPI';
 
 
 function Test() {
     const [points, setPoints] = useState(0);
     const [energy, setEnergy] = useState(800);
     const [clicks, setClicks] = useState([]);
-    const [clickCount, setClickCount] = useState(0);
+    const [clickCount, setClickCount] = useState(0);              
 
     const pointsToAdd = 1;
     const energyToReduce = 1;
@@ -75,33 +75,21 @@ function Test() {
       if (newClickCount % 1 === 0) {
           syncWithServer(tg_id, newCoins.toString());
       }
-  };
+    };
   
     const handleAnimationEnd = (id) => {
       setClicks((prevClicks) => prevClicks.filter(click => click.id !== id))
     };
-
-    useEffect(() => {
-      // Загрузка сохраненной энергии при монтировании
+  
+    useEffect(()=> {
       const savedEnergy = localStorage.getItem('energy');
       if (savedEnergy) {
-        setEnergy(parseInt(savedEnergy, 10));
+        setEnergy(parseInt(savedEnergy, 10))
       }
-    }, []);
-
-    useEffect(() => {
-      // Сохранение энергии при любом изменении
-      localStorage.setItem('energy', energy);
-    }, [energy]); // Этот эффект срабатывает при каждом изменении энергии
-
-    useEffect(() => {
-      const interval = setInterval(() => {
-        setEnergy((prevEnergy) => {
-          const newEnergy = Math.min(prevEnergy + 1, 800);
-          return newEnergy;
-        });
+      const interval = setInterval(()=> {
+        setEnergy((prevEnergy) => Math.min(prevEnergy + 1, 800));
       }, 1000);
-    
+  
       return () => clearInterval(interval);
     }, []);
 
@@ -114,7 +102,7 @@ function Test() {
       return () => clearInterval(interval); // Очистка интервала при размонтировании
     }, [points]);
 
-      // Запускаем интервал для запроса каждые 10 секунд
+    // Запускаем интервал для запроса каждые 10 секунд
     useEffect(() => {
       const interval = setInterval(() => {
         balanceUser(tg_id); // Запрос каждые 10 секунд
@@ -129,7 +117,7 @@ function Test() {
         <div className='absolute inset-0 h-1/2 bg-gradient-overlay z-0'></div>
         <div className='absolute inset-0 flex item-center justify-center z-0'></div>
         <div className='radial-gradient-overlay'></div>
-  
+
         <div className='w-full z-10 min-h-screen flex flex-col items-center text-white'>
   
           <div className='fixed top-0 left-0 w-full px-4 pt-8 z-10 flex flex-col items-center text-white'>

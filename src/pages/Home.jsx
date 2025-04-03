@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { highVoltage} from '../assets/images'
 import { Navigation } from '../components/Navigation/Navigation'
 import { getBalanceUser, saveBalance } from '../http/UserAPI'
+import withMobileCheck from '../components/withMobileCheck';
 
 
 function Home() {
@@ -75,7 +76,7 @@ function Home() {
       if (newClickCount % 1 === 0) {
           syncWithServer(tg_id, newCoins.toString());
       }
-  };
+    };
   
     const handleAnimationEnd = (id) => {
       setClicks((prevClicks) => prevClicks.filter(click => click.id !== id))
@@ -102,7 +103,7 @@ function Home() {
       return () => clearInterval(interval); // Очистка интервала при размонтировании
     }, [points]);
 
-      // Запускаем интервал для запроса каждые 10 секунд
+    // Запускаем интервал для запроса каждые 10 секунд
     useEffect(() => {
       const interval = setInterval(() => {
         balanceUser(tg_id); // Запрос каждые 10 секунд
@@ -190,4 +191,4 @@ function Home() {
 }
 
 
-export default Home;
+export default withMobileCheck(Home);

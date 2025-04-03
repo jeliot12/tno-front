@@ -18,8 +18,8 @@ export const Navigation = ()=>{
     return (
     <div className='flex-grow flex items-center w-full text-sm mt-4 border-t-2 border-[#151515]'>
         <div className='w-full bg-[#131313] pb-7 pt-4 flex justify-around navigate-menu-hover'>
-          <Link to="/"><button className={`flex flex-col items-center gap-1 ${
-              location.pathname === "/"
+          <Link to="/home"><button className={`flex flex-col items-center gap-1 ${
+              location.pathname === "/home"
                 ? colorMain = "#0077b3"
                 : 'text-gray-300 hover:bg-gray-700 hover:text-white'
             }`}>
