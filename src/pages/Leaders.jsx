@@ -1,6 +1,6 @@
 import { Navigation } from "../components/Navigation/Navigation";
-import {useState, useEffect} from 'react';
-import { getUserLeaders } from "../http/UserAPI";
+import {useState} from 'react';
+// import { getUserLeaders } from "../http/UserAPI";
 import { trophy, goldM, silverM, bronzeM} from "../assets/images";
 // import withMobileCheck from '../components/withMobileCheck';
 // import styles from '../styles/TopUsersTable.module.css';
@@ -14,32 +14,32 @@ function Leaders(){
     const [activeTab, setActiveTab] = useState('Сквады');
 
     // Данные для топа игроков
-    useEffect(() => {
-      const fetchTopUsers = async () => {
-        try {
-          const response = await getUserLeaders();
+    // useEffect(() => {
+    //   const fetchTopUsers = async () => {
+    //     try {
+    //       const response = await getUserLeaders();
           
-          if (!response) {
-            throw new Error(`HTTP error! Status: ${response}`);
-          }
+    //       if (!response) {
+    //         throw new Error(`HTTP error! Status: ${response}`);
+    //       }
           
-          // Гарантируем, что data - массив
-          if (!Array.isArray(response.data)) {
-            throw new Error('Invalid data format from server');
-          }
+    //       // Гарантируем, что data - массив
+    //       if (!Array.isArray(response.data)) {
+    //         throw new Error('Invalid data format from server');
+    //       }
   
-          setTopUsers(response.data);
-          setError(null);
-        } catch (err) {
-          setError(err.message);
-          setTopUsers([]); // Сбрасываем до пустого массива при ошибке
-        } finally {
-          setLoading(false);
-        }
-      };
+    //       setTopUsers(response.data);
+    //       setError(null);
+    //     } catch (err) {
+    //       setError(err.message);
+    //       setTopUsers([]); // Сбрасываем до пустого массива при ошибке
+    //     } finally {
+    //       setLoading(false);
+    //     }
+    //   };
   
-      fetchTopUsers();
-    }, []);
+    //   fetchTopUsers();
+    // }, []);
     // Рендер содержимого
     // const renderTable = () => {
     //     if (topUsers.length === 0) {
