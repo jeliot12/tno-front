@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { highVoltage} from '../assets/images'
 import { Navigation } from '../components/Navigation/Navigation'
 import { getBalanceUser, saveBalance } from '../http/UserAPI'
-import withMobileCheck from '../components/withMobileCheck';
 
 
 function Home() {
@@ -186,4 +185,4 @@ function Home() {
 }
 
 
-export default withMobileCheck(Home);
+export default Home;

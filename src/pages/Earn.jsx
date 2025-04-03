@@ -3,7 +3,6 @@ import { Navigation } from "../components/Navigation/Navigation";
 import PropTypes from 'prop-types';
 import { Check, Users, Wallet } from 'lucide-react';
 import {checkSubscribe} from '../http/UserAPI';
-import withMobileCheck from '../components/withMobileCheck';
 
 function TaskItem({ Icon, title, id, reward, action, completed }) {
   const [isCompleted, setIsCompleted] = useState(completed);
@@ -165,4 +164,4 @@ function Earns() {
     )
 }
 
-export default withMobileCheck(Earns);
+export default Earns;

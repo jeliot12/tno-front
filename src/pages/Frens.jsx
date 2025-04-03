@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Navigation } from "../components/Navigation/Navigation";
 import { getRefLinkUser } from '../http/UserAPI';
-import withMobileCheck from '../components/withMobileCheck';
 
 function Frens() {
     const [copying, setCopying] = useState(false);
@@ -81,4 +80,4 @@ function Frens() {
     )
 }
 
-export default withMobileCheck(Frens);
+export default Frens;

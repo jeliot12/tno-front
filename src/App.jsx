@@ -8,7 +8,7 @@ import Earns from "./pages/Earn"
 import UserLeaders from "./pages/leaders/UserLeaders"
 import SquadLeaders from "./pages/leaders/SquadLeaders"
 import Auth from "./pages/Auth"
-import Test from "./pages/Test"
+// import Test from "./pages/Test"
 import DesktopPage from "./pages/DesktopPage/DesktopPage";
 import { MobileOnlyRoute } from "./components/MobileOnlyRoute"
 
@@ -25,7 +25,7 @@ function App() {
 
         <Route path="/home" element={
           <MobileOnlyRoute>
-            <Test />
+            <Home />
           </MobileOnlyRoute>
         } />
         <Route path="/leaders" element={

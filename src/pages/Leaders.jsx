@@ -2,7 +2,7 @@ import { Navigation } from "../components/Navigation/Navigation";
 import {useState, useEffect} from 'react';
 import { getUserLeaders } from "../http/UserAPI";
 import { trophy, goldM, silverM, bronzeM} from "../assets/images";
-import withMobileCheck from '../components/withMobileCheck';
+// import withMobileCheck from '../components/withMobileCheck';
 // import styles from '../styles/TopUsersTable.module.css';
 // import { FaCoins } from 'react-icons/fa';
 
@@ -157,4 +157,4 @@ function Leaders(){
 }
 
 
-export default withMobileCheck(Leaders);
+export default Leaders;
