@@ -71,7 +71,6 @@ function Home() {
       setEnergy(prev => Math.max(prev - (energyToReduce * e.touches.length), 0));
       
       localStorage.setItem('balance', newCoins);
-      localStorage.setItem('energy', energy);
       
       if (newClickCount % 1 === 0) {
           syncWithServer(tg_id, newCoins.toString());
@@ -83,10 +82,6 @@ function Home() {
     };
   
     useEffect(()=> {
-      const savedEnergy = localStorage.getItem('energy');
-      if (savedEnergy) {
-        setEnergy(parseInt(savedEnergy, 10))
-      }
       const interval = setInterval(()=> {
         setEnergy((prevEnergy) => Math.min(prevEnergy + 1, 800));
       }, 1000);
