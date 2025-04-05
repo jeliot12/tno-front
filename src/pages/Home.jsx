@@ -83,7 +83,7 @@ function Home() {
     useEffect(()=> {
       const interval = setInterval(()=> {
         setEnergy((prevEnergy) => Math.min(prevEnergy + 1, 800));
-      }, 1000);
+      }, 20000);
   
       return () => clearInterval(interval);
     }, []);
