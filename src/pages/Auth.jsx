@@ -1,29 +1,47 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {registration} from "../http/UserAPI"
 
 function Auth() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Имитация загрузки (замените на реальную логику загрузки)
-    const timer = setTimeout(() => {
-        navigate('/home', { replace: true }); // Редирект на основную страницу
-    }, 3000); // 3 секунды загрузки
 
-    return () => clearTimeout(timer);
-  }, [navigate]);
+  }, []);
 
-  // загрузка реальных данных
-
+  // Имитация загрузки (замените на реальную логику загрузки)
   // useEffect(() => {
-  //   // Пример загрузки данных
-  //   const loadData = async () => {
-  //     await fetchData(); // Ваша функция загрузки данных
-  //     navigate('/main');
-  //   };
-    
-  //   loadData();
+  //   const timer = setTimeout(() => {
+  //       navigate('/home', { replace: true });
+  //   }, 3000);
+  //   return () => clearTimeout(timer);
   // }, [navigate]);
+
+  // Пример загрузки данных
+
+  useEffect(() => {
+    const loadData = async () => {
+      const app = window.Telegram?.WebApp; // Проверяем наличие Telegram.WebApp
+      if (app) {
+        app.ready(); // Сообщаем Telegram, что приложение готово
+        const user = app.initDataUnsafe.user; // Получаем данные пользователя
+        if (user) {
+          const telegramId = user.id;
+          const username = user.username;
+          // console.log('Премиум:', user.is_premium ? true : false);
+          await registration(telegramId.toString(), username);
+        } else {
+          console.log('Данные пользователя недоступны'); // Если данных нет
+        }
+      } else {
+        console.log('Приложение не запущено в Telegram'); // Если не в Telegram
+      }
+       // Ваша функция загрузки данных
+      navigate('/home', { replace: true });
+    };
+    
+    loadData();
+  }, [navigate]);
 
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-gradient-main text-white font-medium">

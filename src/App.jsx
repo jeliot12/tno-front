@@ -8,7 +8,7 @@ import Earns from "./pages/Earn"
 import UserLeaders from "./pages/leaders/UserLeaders"
 import SquadLeaders from "./pages/leaders/SquadLeaders"
 import Auth from "./pages/Auth"
-// import Test from "./pages/Test"
+import Test from "./pages/Test"
 
 function App() {
 
