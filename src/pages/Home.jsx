@@ -68,7 +68,7 @@ function Home() {
 
     // Функция для синхронизации с сервером
     const syncWithServer = async (id, coinCount) => {
-      const response = await fetch(`http://localhost:4000/api/energy/user/${id}/click`, {
+      const response = await fetch(`http://yusupovjasur12151.fvds.ru:4000/api/energy/user/${id}/click`, {
         method: 'POST',
         body: JSON.stringify({balance: coinCount})
       });
