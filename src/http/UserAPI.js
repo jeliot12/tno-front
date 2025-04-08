@@ -40,3 +40,8 @@ export const checkSubscribe = async (userId) => {
     const {data} = await $host.post('check-subscription', {userId});
     return data
 }
+
+export const checkUserOnDB = async (telegramId,username) => {
+    const {data} = await $host.post('api/user/check-user', {telegramId, username})
+    return data.exists
+}

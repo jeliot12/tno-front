@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const $host = axios.create({
-    // baseURL: "https://spitefully-dexterous-lumpsucker.cloudpub.ru/"
+    // baseURL: "https://tnocoin.ru/api/"
     baseURL: import.meta.env.VITE_REACT_APP_API_URL
 })
 
