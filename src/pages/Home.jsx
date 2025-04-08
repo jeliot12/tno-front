@@ -51,24 +51,18 @@ function Home() {
 
     const balanceUser = async (telegramId) => {
       try {
-        const data = await getBalanceUser(telegramId)
-        console.log('Данные успешно синхронизированы с сервером, количество монет: ', data);
+        let data = await getBalanceUser(telegramId)
+        data = parseInt(data, 10)
+        setPoints(data);
+        console.log(data);
       } catch (error) {
         console.error('Ошибка:', error);
       }
     };
 
-    useEffect(() => {
-      balanceUser(telegramId)
-      const savedCoins = localStorage.getItem('balance');
-      if (savedCoins) {
-        setPoints(parseInt(savedCoins, 10));
-      }
-    }, []);
-
     // Функция для синхронизации с сервером
     const syncWithServer = async (id, coinCount) => {
-      const response = await fetch(`http://yusupovjasur12151.fvds.ru:4000/api/energy/user/${id}/click`, {
+      const response = await fetch(`http://localhost:4000/api/energy/user/${id}/click`, {
         method: 'POST',
         body: JSON.stringify({balance: coinCount})
       });
@@ -114,25 +108,19 @@ function Home() {
       setClicks((prevClicks) => prevClicks.filter(click => click.id !== id))
     };
   
-    useEffect(()=> {
-      const interval = setInterval(()=> {
-        setEnergy((prevEnergy) => Math.min(prevEnergy + 1, 800));
-      }, 20000);
-  
-      return () => clearInterval(interval);
-    }, []);
 
     // Синхронизация каждые 30 секунд
     useEffect(() => {
       const interval = setInterval(() => {
         syncWithServer(telegramId, points);
-      }, 60000 / 2); // 30000 мс = 30 секунд
+      }, 30000); // 30000 мс = 30 секунд
 
       return () => clearInterval(interval); // Очистка интервала при размонтировании
     }, [points]);
 
     // Запускаем интервал для запроса каждые 10 секунд
     useEffect(() => {
+      balanceUser(telegramId);
       const interval = setInterval(() => {
         balanceUser(telegramId); // Запрос каждые 10 секунд
       }, 10000); // 10000 мс = 10 секунд
@@ -174,7 +162,7 @@ function Home() {
             <div className='w-full flex justify-between gap-2 px-4 pb-4'>
               <div className='w-1/3 flex items-center justify-start max-w-32'>
                 <div className='flex items-center justify-center'>
-                  <img src={highVoltage} width={44} height={44} />
+                  <img src={highVoltage} width={40} height={40} />
                   <div className='ml-2 text-left'>
                     <span className='text-white text-2xl font-bold block'>{energy}</span>
                     <span className='text-white text-large opacity-75'>/ {maxEnergy}</span>
