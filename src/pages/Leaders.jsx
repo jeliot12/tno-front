@@ -89,9 +89,9 @@ function Leaders(){
                     </div>
 
                     {/* Кнопки переключения вкладок */}
-                    <div className="bg-[#121212] py-1 px-1 rounded-lg flex justify-center space-x-4 borderTabButton">
+                    <div className="bg-[#121212] py-1 px-1 rounded-lg flex justify-center space-x-4">
                       <button
-                        className={`px-4 py-2 w-full rounded-lg text-2xl font-normal transition${
+                        className={`px-4 py-2 w-full rounded-lg text-2xl font-normal transition ${
                           activeTab === 'Сквады' ? 'bg-[#1a1a1a] borderTabButton' : 'bg-[#121212]'
                         }`}
                         onClick={() => setActiveTab('Сквады')}

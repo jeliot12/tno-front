@@ -151,7 +151,7 @@ function Home() {
           <div className='fixed top-0 left-0 w-full px-4 pt-8 z-10 flex flex-col items-center text-white'>
             <div className='w-full cursor-pointer'>
             </div>
-              <div className="w-full max-w-md bg-[#1E1E1E] rounded-2xl shadow-lg">
+              <div className="w-full max-w-md rounded-2xl bg-[rgba(30,30,30,0.5)] shadow-lg">
                 <div className="flex items-center justify-between p-4">
                   <div className="flex items-center space-x-3">
                     <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
@@ -165,9 +165,9 @@ function Home() {
                   </div>
                 </div>
               </div>
-            <div className='mt-12 text-5xl font-bold flex items-center'>
-              <span className='ml-2'>{points.toLocaleString()}</span>
-            </div>
+              <div className='mt-12 text-5xl font-bold flex items-center'>
+                <span className='ml-2'>{points.toLocaleString()}</span>
+              </div>
           </div>
   
           <div className='fixed bottom-0 left-0 w-full z-10'>
@@ -181,35 +181,35 @@ function Home() {
                   </div>
                 </div>
               </div>
-              {/* <div onClick={test} className='w-1/3 flex items-center justify-end max-w-32 cursor-pointer'>
+              <div className='w-1/3 flex items-center justify-end max-w-32 cursor-pointer'>
                 <div className='flex items-center justify-center'>
-                  <img src={rocket} width={44} height={44} />
+                  {/* <img src={rocket} width={44} height={44} /> */}
                   <div className='ml-2 text-left'>
-                    <span className='text-white text-large opacity-75'>Boost</span>
+                    <span className='text-white text-large opacity-75'>Скины(soon)</span>
                   </div>
                 </div>
-              </div> */}
+              </div>
             </div>
             <Navigation />
           </div>
 
-          <div className='flex-grow flex items-center justify-center'>
-            <div className='relative mt-4 cursor-pointer coinBtn' onTouchStart={handleClick}
-                onContextMenu={(e) => e.preventDefault()} disabled={energy <= 0}>
-              <div className="flex items-center justify-center w-64 h-64 bg-[#4a9be2] rounded-full border-2 border-[#3d3d3d] shadow-lg transition-transform duration-300 transform hover:scale-105 glow">
-                <h1 className="text-white text-6xl font-bold [text-shadow:_0_8px_8px_rgb(99_102_241_/_0.8)]">TNO</h1>
-              </div>
-              {clicks.map((click)=> (
-                <div
-                key={click.id}
-                className='absolute text-5xl font-bold opacity-0'
-                style={{ top: `${click.y - 42}px`, left: `${click.x - 28}px`, animation: `float 1s ease-out` }}
-                onAnimationEnd={()=>handleAnimationEnd(click.id)}
-                >
-                  1
+          <div className='flex flex-col items-center justify-center min-h-screen pb-7'>
+              <div className='relative mt-4 cursor-pointer coinBtn' onTouchStart={handleClick}
+                  onContextMenu={(e) => e.preventDefault()} disabled={energy <= 0}>
+                <div className="max-w-[256px] md:max-w-[256px] lg:max-w-[256px] mx-auto flex items-center justify-center w-64 h-64 bg-[#0088cc] rounded-full border-2 border-[#3d3d3d] shadow-[0_0_250px_0_rgba(0,136,204,0.1),_0_0_50vw_0_rgba(0,136,204,0.3)]">
+                  <h1 className="text-white text-6xl font-bold [text-shadow:_4.3px_3.3px_2px_rgba(0,0,0,0.3),_8.6px_4.6px_4px_rgba(0,0,0,0.2)]">TNO</h1>
                 </div>
-              ))}
-            </div>
+                {clicks.map((click)=> (
+                  <div
+                  key={click.id}
+                  className='absolute text-5xl font-bold opacity-0'
+                  style={{ top: `${click.y - 42}px`, left: `${click.x - 28}px`, animation: `float 1s ease-out` }}
+                  onAnimationEnd={()=>handleAnimationEnd(click.id)}
+                  >
+                    1
+                  </div>
+                ))}
+              </div>
           </div>
           
         </div>

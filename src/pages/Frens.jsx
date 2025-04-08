@@ -61,12 +61,11 @@ function Frens() {
                                 <div className="bg-[#a6a6a6] rounded-lg w-10 h-10 flex items-center justify-center mr-3">
                                 </div>
                                 <div className="flex-1">
-                                    <p className="text-base text-gray-300">Pavel09</p>
+                                    <p className="text-base text-white">Pavel09</p>
                                     <p className="text-xs text-gray-500">Март 20 20:09</p>
                                 </div>
                                 <div className="text-right ml-4">
-                                    <p className="text-white text-sm font-semibold">+550 TNO</p>
-                                    <p className="text-green-400 text-xs">получено</p>
+                                    <p className="text-white text-sm font-normal">+550 TNO</p>
                                 </div>
                             </div>
                         </div>

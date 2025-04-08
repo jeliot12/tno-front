@@ -15,7 +15,7 @@ export default defineConfig({
       allowedHeaders: ['Content-Type']
     },
     port: 5151,
-    allowedHosts: ['yusupovjasur12151.fvds.ru'],
+    allowedHosts: ['fully-qualified-whitebait.cloudpub.ru'],
 
   },
   preview: {
