@@ -16,7 +16,6 @@ export const login = async (telegramId) => {
 
 export const getBalanceUser = async (telegramId) => {
     const {data} = await $host.post('api/user/balance', {telegramId})
-    localStorage.setItem('balance', data.user.balance)
     return data.user.balance
 }
 

@@ -1,20 +1,32 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { highVoltage} from '../assets/images'
 import { Navigation } from '../components/Navigation/Navigation'
-import { getBalanceUser, saveBalance } from '../http/UserAPI'
+import axios from 'axios'
 
+const API_URL = 'http://localhost:4000/api';
 
 function Home() {
-    const [points, setPoints] = useState(0);
+    const [coins, setCoins] = useState(0);
+    const [activeClicks, setActiveClicks] = useState([]);
+    const [clickPosition, setClickPosition] = useState({x: 0, y: 0});
+    const [showClickEffect, setShowClickEffect] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+
+    const circleRef = useRef(null);
+    const lastClickTimeRef = useRef(0);
+    const clickCooldown = 200;
+
     const [energy, setEnergy] = useState(0);
     const [maxEnergy, setMaxEnergy] = useState(800);
     const [wsConnected, setWsConnected] = useState(false);
-    const [clicks, setClicks] = useState([]);
-    const [clickCount, setClickCount] = useState(0);
 
-    const pointsToAdd = 1;
-    const energyToReduce = 1;
+
+    
     const telegramId = "1083689910"; // надо поставить id пользователя из бд
+    // const telegramId = localStorage.getItem("id").toString();
+    // const username = localStorage.getItem("username").toString();
 
     const connectWebSocket = () => {
       const ws = new WebSocket('ws://localhost:8176');
@@ -49,84 +61,117 @@ function Home() {
       return () => ws.close();
     }, []);
 
-    const balanceUser = async (telegramId) => {
-      try {
-        let data = await getBalanceUser(telegramId)
-        data = parseInt(data, 10)
-        setPoints(data);
-        console.log(data);
-      } catch (error) {
-        console.error('Ошибка:', error);
-      }
-    };
-
     // Функция для синхронизации с сервером
-    const syncWithServer = async (id, coinCount) => {
+    const syncWithServer = async (id) => {
       const response = await fetch(`http://localhost:4000/api/energy/user/${id}/click`, {
-        method: 'POST',
-        body: JSON.stringify({balance: coinCount})
+        method: 'POST'
       });
       if (response.ok) {
         const data = await response.json();
         setEnergy(data.energy);
       }
-      await saveBalance(id, coinCount);
     };
 
 
   
-    const handleClick = (e) => {
-      // e.preventDefault();
-      if (energy - energyToReduce < 0) return;
-
-      const rect = e.currentTarget.getBoundingClientRect();
-      const newCoins = points + pointsToAdd;
-      const newClickCount = clickCount + e.touches.length;
-
-      // Обрабатываем каждое касание
-      Array.from(e.touches).forEach(touch => {
-          const x = touch.clientX - rect.left;
-          const y = touch.clientY - rect.top;
-          
-          setClicks(prev => [...prev, { 
-              id: Date.now() + Math.random(), 
-              x, 
-              y 
-          }]);
-      });
-
-      setClickCount(prev => prev + e.touches.length);
-      setPoints(prev => prev + (pointsToAdd * e.touches.length));
-      setEnergy(prev => Math.max(prev - (energyToReduce * e.touches.length), 0));
+    // Загрузка данных при монтировании
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const response = await axios.get(`${API_URL}/coins`);
+          setCoins(response.data.balance || 0);
+          setIsLoading(false);
+        } catch (err) {
+          console.error('Error loading coins:', err);
+          setError('Failed to load data');
+          setIsLoading(false);
+        }
+      };
       
-      if (newClickCount % 1 === 0) {
-          syncWithServer(telegramId, newCoins);
-      }
-    };
-  
-    const handleAnimationEnd = (id) => {
-      setClicks((prevClicks) => prevClicks.filter(click => click.id !== id))
-    };
+      fetchData();
+    }, []);
+
+    // Обработчики событий
+    useEffect(() => {
+      const circle = circleRef.current;
+      if (!circle) return;
+
+      const handleInteraction = async (clientX, clientY, id) => {
+        const now = Date.now();
+        if (now - lastClickTimeRef.current < clickCooldown) return;
+        lastClickTimeRef.current = now;
+        
+        if (activeClicks.length >= 3) return;
+        
+        const circleRect = circle.getBoundingClientRect();
+        const circleX = circleRect.left + circleRect.width / 2;
+        const circleY = circleRect.top + circleRect.height / 2;
+        const distance = Math.sqrt(
+          Math.pow(clientX - circleX, 2) + Math.pow(clientY - circleY, 2)
+        );
+        
+        if (distance <= circleRect.width / 2) {
+          if (navigator.vibrate) navigator.vibrate(10);
+          
+          setActiveClicks(prev => [...prev, { id, x: clientX, y: clientY }]);
+          setClickPosition({x: clientX, y: clientY});
+          setShowClickEffect(false);
+          
+          setTimeout(() => {
+            setActiveClicks(prev => prev.filter(click => click.id !== id));
+          }, 300);
+          
+          const newCoins = Number(coins) + 1;
+          setCoins(Number(newCoins));
+          
+          try {
+            await axios.post(`${API_URL}/coins`, { telegramId: telegramId, username: "qwqwqrw", balance: newCoins });
+            await syncWithServer(telegramId)
+          } catch (err) {
+            console.error('Error saving coins:', err);
+            setCoins(coins);
+          }
+        }
+      };
+
+      const handleTouchStart = (e) => {
+        if (e.cancelable) e.preventDefault();
+        const touch = e.touches[e.touches.length - 1];
+        handleInteraction(touch.clientX, touch.clientY, touch.identifier);
+      };
+
+      const handleMouseDown = (e) => {
+        handleInteraction(e.clientX, e.clientY, 'mouse_' + Date.now());
+      };
+
+      const handleTouchEnd = (e) => {
+        const touches = Array.from(e.changedTouches);
+        setActiveClicks(prev => prev.filter(click => 
+          !touches.some(touch => touch.identifier === click.id)
+        ));
+      };
+
+      circle.addEventListener('mousedown', handleMouseDown);
+      circle.addEventListener('touchstart', handleTouchStart, { passive: false });
+      circle.addEventListener('touchend', handleTouchEnd);
+
+      return () => {
+        circle.removeEventListener('mousedown', handleMouseDown);
+        circle.removeEventListener('touchstart', handleTouchStart);
+        circle.removeEventListener('touchend', handleTouchEnd);
+      };
+    }, [coins, activeClicks.length]);
   
 
     // Синхронизация каждые 30 секунд
-    useEffect(() => {
-      const interval = setInterval(() => {
-        syncWithServer(telegramId, points);
-      }, 30000); // 30000 мс = 30 секунд
+    // useEffect(() => {
+    //   const interval = setInterval(() => {
+    //     syncWithServer(telegramId);
+    //     saveBalance(telegramId, points);
+    //   }, 30000);
 
-      return () => clearInterval(interval); // Очистка интервала при размонтировании
-    }, [points]);
-
-    // Запускаем интервал для запроса каждые 10 секунд
-    useEffect(() => {
-      balanceUser(telegramId);
-      const interval = setInterval(() => {
-        balanceUser(telegramId); // Запрос каждые 10 секунд
-      }, 10000); // 10000 мс = 10 секунд
-
-      return () => clearInterval(interval); // Очистка интервала при размонтировании
-    }, []);
+    //   return () => clearInterval(interval);
+    // }, [points]);
   
     return (
       <div className='bg-gradient-main min-h-screen px-4 flex flex-col items-center text-white font-medium'>
@@ -154,7 +199,7 @@ function Home() {
                 </div>
               </div>
               <div className='mt-12 text-5xl font-bold flex items-center'>
-                <span className='ml-2'>{points.toLocaleString()}</span>
+                <span className='ml-2'>{coins}</span>
               </div>
           </div>
   
@@ -182,25 +227,33 @@ function Home() {
           </div>
 
           <div className='flex flex-col items-center justify-center min-h-screen pb-7'>
-              <div className='relative mt-4 cursor-pointer coinBtn' onTouchStart={handleClick}
-                  onContextMenu={(e) => e.preventDefault()} disabled={energy <= 0}>
+              <div className='relative mt-4 cursor-pointer coinBtn select-none active:scale-95'ref={circleRef} disabled={energy <= 0}>
                 <div className="max-w-[256px] md:max-w-[256px] lg:max-w-[256px] mx-auto flex items-center justify-center w-64 h-64 bg-[#0088cc] rounded-full border-2 border-[#3d3d3d] shadow-[0_0_250px_0_rgba(0,136,204,0.1),_0_0_50vw_0_rgba(0,136,204,0.3)]">
                   <h1 className="text-white text-6xl font-bold [text-shadow:_4.3px_3.3px_2px_rgba(0,0,0,0.3),_8.6px_4.6px_4px_rgba(0,0,0,0.2)]">TNO</h1>
                 </div>
-                {clicks.map((click)=> (
-                  <div
-                  key={click.id}
-                  className='absolute text-5xl font-bold opacity-0'
-                  style={{ top: `${click.y - 42}px`, left: `${click.x - 28}px`, animation: `float 1s ease-out` }}
-                  onAnimationEnd={()=>handleAnimationEnd(click.id)}
-                  >
-                    1
-                  </div>
-                ))}
+                {showClickEffect && (
+                  <div 
+                    className="absolute text-5xl font-bold opacity-0"
+                    style={{
+                      left: `${clickPosition.x - 42}px`,
+                      top: `${clickPosition.y - 42}px`,
+                      transform: 'scale(0)',
+                      animation: 'clickEffect 0.3s forwards'
+                    }}
+                    onAnimationEnd={() => setShowClickEffect(false)}
+                  />
+                )}
               </div>
           </div>
-          
         </div>
+        <style jsx>{`
+        @keyframes clickEffect {
+          to {
+            transform: scale(2);
+            opacity: 0;
+          }
+        }
+      `}</style>
       </div>
     )
 }
