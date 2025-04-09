@@ -9,7 +9,9 @@ function Home() {
     const [coins, setCoins] = useState(0);
     const [activeClicks, setActiveClicks] = useState([]);
     const [clickPosition, setClickPosition] = useState({x: 0, y: 0});
-    const [showClickEffect, setShowClickEffect] = useState(false);
+    const [animations, setAnimations] = useState([]);
+    const [coinTexts, setCoinTexts] = useState([]);
+
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -17,16 +19,19 @@ function Home() {
     const circleRef = useRef(null);
     const lastClickTimeRef = useRef(0);
     const clickCooldown = 200;
+    const animationRefs = useRef({});
+    const animationDuration = 300;
+    const coinsPerClick = 1;
 
-    const [energy, setEnergy] = useState(0);
+    const [energy, setEnergy] = useState(800);
     const [maxEnergy, setMaxEnergy] = useState(800);
     const [wsConnected, setWsConnected] = useState(false);
 
 
     
-    const telegramId = "1083689910"; // надо поставить id пользователя из бд
-    // const telegramId = localStorage.getItem("id").toString();
-    // const username = localStorage.getItem("username").toString();
+    //const telegramId = "1083689910"; // надо поставить id пользователя из бд
+    const telegramId = localStorage.getItem("id").toString();
+    const username = localStorage.getItem("username").toString();
 
     const connectWebSocket = () => {
       const ws = new WebSocket('ws://localhost:8176');
@@ -78,7 +83,7 @@ function Home() {
     useEffect(() => {
       const fetchData = async () => {
         try {
-          const response = await axios.get(`${API_URL}/coins`);
+          const response = await axios.get(`${API_URL}/coins/${telegramId}`);
           setCoins(response.data.balance || 0);
           setIsLoading(false);
         } catch (err) {
@@ -91,6 +96,85 @@ function Home() {
       fetchData();
     }, []);
 
+      // Анимация клика
+    const addAnimation = (x, y, id) => {
+      const startTime = Date.now();
+      
+      setAnimations(prev => [...prev, { id, x, y, progress: 0 }]);
+      
+      const animate = () => {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / animationDuration, 1);
+        
+        setAnimations(prev => 
+          prev.map(anim => 
+            anim.id === id ? { ...anim, progress } : anim
+          )
+        );
+        
+        if (progress < 1) {
+          animationRefs.current[id] = requestAnimationFrame(animate);
+        } else {
+          setAnimations(prev => prev.filter(a => a.id !== id));
+          delete animationRefs.current[id];
+        }
+      };
+      
+      animationRefs.current[id] = requestAnimationFrame(animate);
+    };
+
+    // Анимация текста монет
+    const addCoinText = (x, y) => {
+      const id = Date.now() + Math.random();
+      const startTime = Date.now();
+      
+      setCoinTexts(prev => [...prev, { 
+        id,
+        x, 
+        y,
+        opacity: 1,
+        yOffset: 0 
+      }]);
+      
+      const animateText = () => {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / 1000, 1);
+        
+        setCoinTexts(prev => 
+          prev.map(text => {
+            if (text.id !== id) return text;
+            
+            return {
+              ...text,
+              opacity: 1 - progress,
+              yOffset: progress * -50
+            };
+          })
+        );
+        
+        if (progress < 1) {
+          requestAnimationFrame(animateText);
+        } else {
+          setCoinTexts(prev => prev.filter(t => t.id !== id));
+        }
+      };
+      
+      requestAnimationFrame(animateText);
+    };
+
+    const handleAnimationEnd = (id) => {
+      setCoinTexts((prev) => prev.filter(click => click.id !== id))
+    };
+
+    // Очистка анимаций
+    useEffect(() => {
+      return () => {
+        Object.values(animationRefs.current).forEach(id => 
+          cancelAnimationFrame(id)
+        );
+      };
+    }, []);
+
     // Обработчики событий
     useEffect(() => {
       const circle = circleRef.current;
@@ -101,7 +185,7 @@ function Home() {
         if (now - lastClickTimeRef.current < clickCooldown) return;
         lastClickTimeRef.current = now;
         
-        if (activeClicks.length >= 3) return;
+        if (activeClicks.length >= 4) return;
         
         const circleRect = circle.getBoundingClientRect();
         const circleX = circleRect.left + circleRect.width / 2;
@@ -115,7 +199,8 @@ function Home() {
           
           setActiveClicks(prev => [...prev, { id, x: clientX, y: clientY }]);
           setClickPosition({x: clientX, y: clientY});
-          setShowClickEffect(false);
+          addAnimation(clientX, clientY, id)
+          addCoinText(clickPosition.x, clickPosition.y);
           
           setTimeout(() => {
             setActiveClicks(prev => prev.filter(click => click.id !== id));
@@ -161,17 +246,7 @@ function Home() {
         circle.removeEventListener('touchend', handleTouchEnd);
       };
     }, [coins, activeClicks.length]);
-  
 
-    // Синхронизация каждые 30 секунд
-    // useEffect(() => {
-    //   const interval = setInterval(() => {
-    //     syncWithServer(telegramId);
-    //     saveBalance(telegramId, points);
-    //   }, 30000);
-
-    //   return () => clearInterval(interval);
-    // }, [points]);
   
     return (
       <div className='bg-gradient-main min-h-screen px-4 flex flex-col items-center text-white font-medium'>
@@ -227,33 +302,24 @@ function Home() {
           </div>
 
           <div className='flex flex-col items-center justify-center min-h-screen pb-7'>
-              <div className='relative mt-4 cursor-pointer coinBtn select-none active:scale-95'ref={circleRef} disabled={energy <= 0}>
-                <div className="max-w-[256px] md:max-w-[256px] lg:max-w-[256px] mx-auto flex items-center justify-center w-64 h-64 bg-[#0088cc] rounded-full border-2 border-[#3d3d3d] shadow-[0_0_250px_0_rgba(0,136,204,0.1),_0_0_50vw_0_rgba(0,136,204,0.3)]">
+            <div className='relative mt-4 cursor-pointer coinBtn select-none active:scale-95'ref={circleRef} disabled={energy <= 0}>
+              <div className="max-w-[256px] md:max-w-[256px] lg:max-w-[256px] mx-auto flex items-center justify-center w-64 h-64 bg-[#0088cc] rounded-full border-2 border-[#3d3d3d] shadow-[0_0_250px_0_rgba(0,136,204,0.1),_0_0_50vw_0_rgba(0,136,204,0.3)]">
                   <h1 className="text-white text-6xl font-bold [text-shadow:_4.3px_3.3px_2px_rgba(0,0,0,0.3),_8.6px_4.6px_4px_rgba(0,0,0,0.2)]">TNO</h1>
-                </div>
-                {showClickEffect && (
-                  <div 
-                    className="absolute text-5xl font-bold opacity-0"
-                    style={{
-                      left: `${clickPosition.x - 42}px`,
-                      top: `${clickPosition.y - 42}px`,
-                      transform: 'scale(0)',
-                      animation: 'clickEffect 0.3s forwards'
-                    }}
-                    onAnimationEnd={() => setShowClickEffect(false)}
-                  />
-                )}
               </div>
+
+              {coinTexts.map((click)=> (
+                <div
+                key={click.id}
+                className='absolute text-2xl font-bold opacity-0'
+                style={{ top: `${click.y - 100}px`, left: `${click.x - 50}px`, animation: `float 1s ease-out` }}
+                onAnimationEnd={()=>handleAnimationEnd(click.id)}
+                >
+                  {coinsPerClick}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-        <style jsx>{`
-        @keyframes clickEffect {
-          to {
-            transform: scale(2);
-            opacity: 0;
-          }
-        }
-      `}</style>
       </div>
     )
 }
