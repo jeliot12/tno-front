@@ -76,6 +76,12 @@ body {
   touch-action: manipulation;
 }
 
+.coinDisabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
 @keyframes progress {
   0% { width: 0%; }
   100% { width: 100%; }

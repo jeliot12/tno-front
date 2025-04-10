@@ -7,6 +7,7 @@ import trophy from "./trophy.png";
 import goldM from "./goldMedal.png";
 import silverM from "./silverMedal.png";
 import bronzeM from "./bronzeMedal.png";
+import profileImage from "./logo_tno.jpg";
 
 export {
     bear,
@@ -17,5 +18,6 @@ export {
     trophy,
     goldM,
     silverM,
-    bronzeM
+    bronzeM,
+    profileImage
 }

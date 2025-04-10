@@ -1,45 +1,44 @@
 import { Navigation } from "../components/Navigation/Navigation";
-import {useState} from 'react';
-// import { getUserLeaders } from "../http/UserAPI";
-import { trophy, goldM, silverM, bronzeM} from "../assets/images";
+import {useState, useEffect} from 'react';
+import { getUserLeaders } from "../http/UserAPI";
+import { trophy, goldM, silverM, bronzeM, profileImage} from "../assets/images";
 // import withMobileCheck from '../components/withMobileCheck';
-// import styles from '../styles/TopUsersTable.module.css';
-// import { FaCoins } from 'react-icons/fa';
 
 
 function Leaders(){
-    // const [topUsers, setTopUsers] = useState([]);
-    // const [loading, setLoading] = useState(true);
-    // const [error, setError] = useState(null);
+    const [topUsers, setTopUsers] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [activeTab, setActiveTab] = useState('Сквады');
 
     // Данные для топа игроков
-    // useEffect(() => {
-    //   const fetchTopUsers = async () => {
-    //     try {
-    //       const response = await getUserLeaders();
+    useEffect(() => {
+      const fetchTopUsers = async () => {
+        try {
+          const response = await getUserLeaders();
           
-    //       if (!response) {
-    //         throw new Error(`HTTP error! Status: ${response}`);
-    //       }
+          if (!response) {
+            throw new Error(`HTTP error! Status: ${response}`);
+          }
           
-    //       // Гарантируем, что data - массив
-    //       if (!Array.isArray(response.data)) {
-    //         throw new Error('Invalid data format from server');
-    //       }
+          // Гарантируем, что data - массив
+          if (!Array.isArray(response.data)) {
+            throw new Error('Invalid data format from server');
+          }
   
-    //       setTopUsers(response.data);
-    //       setError(null);
-    //     } catch (err) {
-    //       setError(err.message);
-    //       setTopUsers([]); // Сбрасываем до пустого массива при ошибке
-    //     } finally {
-    //       setLoading(false);
-    //     }
-    //   };
+          setTopUsers(response.data);
+          setError(null);
+        } catch (err) {
+          setError(err.message);
+          setTopUsers([]); // Сбрасываем до пустого массива при ошибке
+        } finally {
+          setLoading(false);
+        }
+      };
   
-    //   fetchTopUsers();
-    // }, []);
+      fetchTopUsers();
+    }, []);
+
     // Рендер содержимого
     // const renderTable = () => {
     //     if (topUsers.length === 0) {
@@ -53,12 +52,6 @@ function Leaders(){
     // if (error) {
     //   return <div className={styles.error}>Error: {error}</div>;
     // }
-    const playersData = [
-      { rank: 1, username: 'TNO community', balance: 100000},
-      { rank: 2, username: 'РоманЧИК', balance: 50000},
-      { rank: 3, username: 'Mara', balance: 50000},
-      { rank: 4, username: 'Durov', balance: 10785},
-    ];
 
     // Данные для топа сквадов
     const squadsData = [
@@ -70,7 +63,7 @@ function Leaders(){
 
 
     // Выбор данных в зависимости от активной вкладки
-    const data = activeTab === 'Сквады' ? squadsData : playersData;
+    const data = activeTab === 'Сквады' ? squadsData : topUsers;
     return (
         <div className='min-h-screen bg-gradient-main px-4 flex flex-col items-center text-white font-medium'>
             <div className='absolute inset-0 h-1/2 bg-gradient-overlay z-0'></div>
@@ -116,10 +109,9 @@ function Leaders(){
                           className={`flex items-center justify-between p-2 rounded-lg`}
                         >
                           <div className="flex items-center space-x-3">
-                            <div
-                              className={`w-10 h-10 rounded-lg flex items-center justify-center bg-white`}
-                            >
-                            </div>
+                            <img src={profileImage}
+                              className={`w-12 h-12 rounded-lg`}
+                            />
                             <div>
                               <p className="text-base font-medium">{user.username}</p>
                               <p className="text-sm text-gray-400">{user.balance} TNO</p>
