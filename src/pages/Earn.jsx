@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { Navigation } from "../components/Navigation/Navigation";
 import PropTypes from 'prop-types';
-import { Check, Users, Wallet } from 'lucide-react';
+import { FaUsers, FaCheck } from "react-icons/fa";
 import {checkSubscribe} from '../http/UserAPI';
+import Telegram from '../assets/Icon/Telegram'
 
-function TaskItem({ Icon, title, id, reward, action, completed }) {
+
+function TaskItem({ Icon, colorBg, title, id, reward, action, completed }) {
   const [isCompleted, setIsCompleted] = useState(completed);
 
   const checkUserSubcription = async (userId)=> {
@@ -18,7 +20,8 @@ function TaskItem({ Icon, title, id, reward, action, completed }) {
 
   const handleAction = () => {
     const channelUrl = 'https://t.me/tno_community';
-    const userId = 1083689910;
+    const userId = localStorage.getItem("id").toString();
+    //const userId = 1083689910;
     
     if (action === 'Начать') {
       if (id === "substno"){
@@ -34,8 +37,9 @@ function TaskItem({ Icon, title, id, reward, action, completed }) {
     // border-b-2 border-b-[#1f1f1f]
       <li className="flex items-center justify-between py-4 px-6">
         <div className="flex items-center space-x-4">
-          <div className="p-2 bg-neutral-800 rounded-lg">
-            <Icon size={20} color="white" />
+          <div className={`bg-[${colorBg}] rounded-lg`}>
+            {Icon}
+            {/* <Icon size={20} color="white" className='bg-blue-500'/> */}
           </div>
           <div>
             <h3 className="text-base font-normal text-white">{title}</h3>
@@ -44,7 +48,7 @@ function TaskItem({ Icon, title, id, reward, action, completed }) {
         </div>
         {isCompleted ? (
           <div className="text-green-500">
-            <Check size={20} />
+            <FaCheck  size={20}/>
           </div>
         ) : (
           <button
@@ -84,7 +88,8 @@ function Earns() {
                           <li className='mb-1'>
                             <ul>
                               <TaskItem
-                                Icon={Users}
+                                Icon={<FaUsers size={35} color='black' />}
+                                colorBg="#ffff"
                                 title="Пригласить 10 друзей"
                                 id="frens"
                                 reward="+ 5,000 TNO"
@@ -96,55 +101,7 @@ function Earns() {
                           <li>
                             <ul>
                               <TaskItem
-                                Icon={Wallet}
-                                title="Подписаться на канал"
-                                id="substno"
-                                reward="+ 3,000 TNO"
-                                action="Начать"
-                                completed={false}
-                              />
-                            </ul>
-                          </li>
-                          <li>
-                            <ul>
-                              <TaskItem
-                                Icon={Wallet}
-                                title="Подписаться на канал"
-                                id="substno"
-                                reward="+ 3,000 TNO"
-                                action="Начать"
-                                completed={false}
-                              />
-                            </ul>
-                          </li>
-                          <li>
-                            <ul>
-                              <TaskItem
-                                Icon={Wallet}
-                                title="Подписаться на канал"
-                                id="substno"
-                                reward="+ 3,000 TNO"
-                                action="Начать"
-                                completed={false}
-                              />
-                            </ul>
-                          </li>
-                          <li>
-                            <ul>
-                              <TaskItem
-                                Icon={Wallet}
-                                title="Подписаться на канал"
-                                id="substno"
-                                reward="+ 3,000 TNO"
-                                action="Начать"
-                                completed={false}
-                              />
-                            </ul>
-                          </li>
-                          <li>
-                            <ul>
-                              <TaskItem
-                                Icon={Wallet}
+                                Icon={<Telegram size={35} color='white' />}
                                 title="Подписаться на канал"
                                 id="substno"
                                 reward="+ 3,000 TNO"

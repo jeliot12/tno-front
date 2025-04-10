@@ -11,6 +11,7 @@ const Shield = ({ size = 40, className = "", imageHref = "" }) => {
 Shield.propTypes = {
     size: PropTypes.number, // size должен быть числом
     className: PropTypes.string, // className должен быть строкой
+    imageHref: PropTypes.string
 };
 
 export default Shield;

@@ -12,6 +12,7 @@ const House = ({ size = 40, className = "", color = "" }) => {
 House.propTypes = {
     size: PropTypes.number, // size должен быть числом
     className: PropTypes.string, // className должен быть строкой
+    color: PropTypes.string
 };
 
 export default House;

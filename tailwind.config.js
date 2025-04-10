@@ -5,7 +5,11 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {}
+    extend: {
+      screens: {
+        'xs': {'max': '380px'}, // Кастомный брейкпоинт
+      },
+    }
   },
   plugins: [],
 }

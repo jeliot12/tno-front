@@ -6,16 +6,16 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/api': 'http://yusupovjasur12151.fvds.ru:4000'
+      '/api': 'https://tnocoin.ru'
     },
     cors: {
       // origin: ['http://yusupovjasur12151.fvds.ru', 'http://80.87.200.172:4000', 'http://80.87.200.172'],
-      origin: ['http://yusupovjasur12151.fvds.ru:4000', 'http://80.87.200.172:4000', 'http://yusupovjasur12151.fvds.ru/api'],
+      origin: ['https://tnocoin.ru', 'http://80.87.200.172', 'https://tnocoin.ru/api'],
       methods: ['GET', 'POST'],
       allowedHeaders: ['Content-Type']
     },
     port: 5151,
-    allowedHosts: ['fully-qualified-whitebait.cloudpub.ru'],
+    allowedHosts: ['tnocoin.ru'],
 
   },
   preview: {

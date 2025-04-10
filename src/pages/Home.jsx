@@ -207,11 +207,15 @@ function Home() {
           }, 300);
           
           const newCoins = Number(coins) + 1;
-          setCoins(Number(newCoins));
           
           try {
-            await axios.post(`${API_URL}/coins`, { telegramId: telegramId, username: "qwqwqrw", balance: newCoins });
-            await syncWithServer(telegramId)
+            if (energy > 0){
+              setCoins(Number(newCoins));
+              await axios.post(`${API_URL}/coins`, { telegramId: telegramId, username: "qwqwqrw", balance: newCoins });
+              await syncWithServer(telegramId)
+            }else if (energy <= 0){
+              setCoinTexts([])
+            }
           } catch (err) {
             console.error('Error saving coins:', err);
             setCoins(coins);
@@ -273,7 +277,7 @@ function Home() {
                   </div>
                 </div>
               </div>
-              <div className='mt-12 text-5xl font-bold flex items-center'>
+              <div className='mt-12 text-5xl font-bold flex items-center xs:text-4xl'>
                 <span className='ml-2'>{coins}</span>
               </div>
           </div>
@@ -302,9 +306,9 @@ function Home() {
           </div>
 
           <div className='flex flex-col items-center justify-center min-h-screen pb-7'>
-            <div className='relative mt-4 cursor-pointer coinBtn select-none active:scale-95'ref={circleRef} disabled={energy <= 0}>
-              <div className="max-w-[256px] md:max-w-[256px] lg:max-w-[256px] mx-auto flex items-center justify-center w-64 h-64 bg-[#0088cc] rounded-full border-2 border-[#3d3d3d] shadow-[0_0_250px_0_rgba(0,136,204,0.1),_0_0_50vw_0_rgba(0,136,204,0.3)]">
-                  <h1 className="text-white text-6xl font-bold [text-shadow:_4.3px_3.3px_2px_rgba(0,0,0,0.3),_8.6px_4.6px_4px_rgba(0,0,0,0.2)]">TNO</h1>
+            <div className='relative mt-4 cursor-pointer coinBtn select-none active:scale-95' ref={circleRef}>
+              <div className="max-w-[246px] md:max-w-[246px] lg:max-w-[256px] mx-auto flex items-center justify-center w-64 h-64 xs:w-48 xs:h-48 bg-[#0088cc] rounded-full border-2 border-[#3d3d3d] shadow-[0_0_250px_0_rgba(0,136,204,0.1),_0_0_50vw_0_rgba(0,136,204,0.3)]">
+                  <h1 className="text-white text-6xl font-bold [text-shadow:_4.3px_3.3px_2px_rgba(0,0,0,0.3),_8.6px_4.6px_4px_rgba(0,0,0,0.2)] xs:text-4xl">TNO</h1>
               </div>
 
               {coinTexts.map((click)=> (

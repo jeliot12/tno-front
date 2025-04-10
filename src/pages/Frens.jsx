@@ -5,7 +5,9 @@ import { getRefLinkUser } from '../http/UserAPI';
 function Frens() {
     const [copying, setCopying] = useState(false);
     const [refLink, setRefLink] = useState();
-    const tg_id = "1083689910";
+
+    const tg_id = localStorage.getItem("id").toString();
+    //const tg_id = "1083689910";
 
     const getLink = async (telegramId) => {
         await getRefLinkUser(telegramId);
