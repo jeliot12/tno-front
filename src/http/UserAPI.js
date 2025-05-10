@@ -35,12 +35,28 @@ export const getRefLinkUser = async (telegramId) => {
     return data.user.referralLink
 }
 
-export const checkSubscribe = async (userId) => {
-    const {data} = await $host.post('check-subscription', {userId});
+export const checkSubscribe = async (userId, username) => {
+    // const balance = 3000;
+    const {data} = await $host.post('api/check-subscription', {userId, username});
+    return data
+}
+
+export const checkTasks = async (telegramId) => {
+    const {data} = await $host.get(`api/check/tasks/${telegramId}`)
     return data
 }
 
 export const checkUserOnDB = async (telegramId,username) => {
     const {data} = await $host.post('api/user/check-user', {telegramId, username})
     return data.exists
+}
+
+export const getUsersReferral = async (telegramId) => {
+    const {data} = await $host.post('api/stats/listReferrer', {telegramId});
+    return data
+}
+
+export const checkInvite = async (telegramId, username) => {
+    const {data} = await $host.get('api/check/invite', {telegramId, username})
+    return data
 }

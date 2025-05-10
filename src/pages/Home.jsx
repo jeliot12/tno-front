@@ -3,7 +3,7 @@ import { highVoltage} from '../assets/images'
 import { Navigation } from '../components/Navigation/Navigation'
 import axios from 'axios'
 
-const API_URL = 'http://localhost:4000/api';
+const API_URL = 'https://tnocoin.ru/api';
 
 function Home() {
     const [coins, setCoins] = useState(0);
@@ -29,12 +29,13 @@ function Home() {
 
 
     
-    //const telegramId = "1083689910"; // надо поставить id пользователя из бд
+    // const telegramId = "1083689910"; // надо поставить id пользователя из бд
+    // const username = "qwqwqrw";
     const telegramId = localStorage.getItem("id").toString();
     const username = localStorage.getItem("username").toString();
 
     const connectWebSocket = () => {
-      const ws = new WebSocket('ws://localhost:8176');
+      const ws = new WebSocket('wss://tnocoin.ru/ws');
   
       ws.onopen = () => {
         console.log('WebSocket connected');
@@ -68,7 +69,7 @@ function Home() {
 
     // Функция для синхронизации с сервером
     const syncWithServer = async (id) => {
-      const response = await fetch(`http://localhost:4000/api/energy/user/${id}/click`, {
+      const response = await fetch(`https://tnocoin.ru/api/energy/user/${id}/click`, {
         method: 'POST'
       });
       if (response.ok) {
@@ -211,7 +212,7 @@ function Home() {
           try {
             if (energy > 0){
               setCoins(Number(newCoins));
-              await axios.post(`${API_URL}/coins`, { telegramId: telegramId, username: "qwqwqrw", balance: newCoins });
+              await axios.post(`${API_URL}/coins`, { telegramId: telegramId, username: username, balance: newCoins });
               await syncWithServer(telegramId)
             }else if (energy <= 0){
               setCoinTexts([])
@@ -293,23 +294,43 @@ function Home() {
                   </div>
                 </div>
               </div>
-              <div className='w-1/3 flex items-center justify-end max-w-32 cursor-pointer'>
+              {/* <div className='w-1/3 flex items-center justify-end max-w-32 cursor-pointer'>
                 <div className='flex items-center justify-center'>
-                  {/* <img src={rocket} width={44} height={44} /> */}
+                  <img src={rocket} width={44} height={44} />
                   <div className='ml-2 text-left'>
                     <span className='text-white text-large opacity-75'>Скины(soon)</span>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
             <Navigation />
           </div>
 
           <div className='flex flex-col items-center justify-center min-h-screen pb-7'>
-            <div className='relative mt-4 cursor-pointer coinBtn select-none active:scale-95' ref={circleRef}>
-              <div className="max-w-[246px] md:max-w-[246px] lg:max-w-[256px] mx-auto flex items-center justify-center w-64 h-64 xs:w-48 xs:h-48 bg-[#0088cc] rounded-full border-2 border-[#3d3d3d] shadow-[0_0_250px_0_rgba(0,136,204,0.1),_0_0_50vw_0_rgba(0,136,204,0.3)]">
-                  <h1 className="text-white text-6xl font-bold [text-shadow:_4.3px_3.3px_2px_rgba(0,0,0,0.3),_8.6px_4.6px_4px_rgba(0,0,0,0.2)] xs:text-4xl">TNO</h1>
-              </div>
+          <div className='relative mt-4 cursor-pointer coinBtn select-none active:scale-95' ref={circleRef}>
+            <div className="mx-auto flex items-center justify-center 
+    aspect-square          // Добавляем для сохранения пропорций 1:1
+    w-[70vw]              // Ширина на мобильных
+    max-w-[320px]         // Максимальная ширина на ПК
+    min-w-[200px]         // Минимальная ширина
+    bg-[#0088cc] 
+    rounded-full 
+    border-[3px] 
+    border-[#3d3d3d]
+    shadow-[0_0_250px_0_rgba(0,136,204,0.1),0_0_50vw_0_rgba(0,136,204,0.3)]
+    md:w-[320px]          // Фиксированная ширина для ПК
+    md:h-[320px]          // Фиксированная высота для ПК
+    md:border-[4px]">
+              <h1 className="text-white 
+      text-[10vw]
+      font-bold 
+      [text-shadow:_4.3px_3.3px_2px_rgba(0,0,0,0.3),_8.6px_4.6px_4px_rgba(0,0,0,0.2)]
+      sm:text-[64px]
+      md:text-[72px]
+      max-sm:text-[44px]"> 
+                TNO
+              </h1>
+            </div>
 
               {coinTexts.map((click)=> (
                 <div

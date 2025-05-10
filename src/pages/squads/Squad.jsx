@@ -1,7 +1,9 @@
 import { Navigation } from "../../components/Navigation/Navigation";
-
+import FormModal from '../../components/Modal/FormModal';
+import { useState } from 'react';
 
 function Squad(){
+    const [isModalOpen, setIsModalOpen] = useState(false);
     return (
         <div className='min-h-screen bg-gradient-main px-4 flex flex-col items-center text-white font-medium'>
             <div className='absolute inset-0 h-1/2 bg-gradient-overlay z-0'></div>
@@ -21,8 +23,12 @@ function Squad(){
                     <Navigation />
                 </div>
                 <div className="flex justify-center items-center min-h-screen w-full">
-                    <button className="bg-[#0088cc] text-white text-3xl font-normal py-3 px-8 rounded-lg w-full transition duration-200">Создать сквад</button>
+                    <button onClick={() => setIsModalOpen(true)} className="bg-[#0088cc] text-white text-3xl font-normal py-3 px-8 rounded-lg w-full transition duration-200">Создать сквад</button>
                 </div>
+                <FormModal 
+                    isOpen={isModalOpen} 
+                    onClose={() => setIsModalOpen(false)}
+                />
             </div>
         </div>
     )
