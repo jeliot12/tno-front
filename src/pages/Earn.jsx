@@ -1,37 +1,88 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Navigation } from "../components/Navigation/Navigation";
 import PropTypes from 'prop-types';
 import { FaUsers, FaCheck } from "react-icons/fa";
-import {checkSubscribe} from '../http/UserAPI';
-import Telegram from '../assets/Icon/Telegram'
+import {checkSubscribe, checkTasks, checkInvite} from '../http/UserAPI';
+import Telegram from '../assets/Icon/Telegram';
 
 
 function TaskItem({ Icon, colorBg, title, id, reward, action, completed }) {
   const [isCompleted, setIsCompleted] = useState(completed);
 
-  const checkUserSubcription = async (userId)=> {
-    const data = await checkSubscribe(userId);
+  const telegramId = localStorage.getItem("id").toString();
+  const userId = Number(telegramId);
+  const username = localStorage.getItem("username").toString();
+
+  const checkUserSubcription = async (userId, username)=> {
+    const data = await checkSubscribe(userId, username);
     if (data.isSubscribed == true){
       setIsCompleted(true);
+      console.log(data);
+      
+      localStorage.setItem("isSubscribed", "true")
     }else{
+      setIsCompleted(false);
       console.log("user is not subs");
     }
   }
 
   const handleAction = () => {
     const channelUrl = 'https://t.me/tno_community';
-    const userId = localStorage.getItem("id").toString();
-    //const userId = 1083689910;
-    
+    //const userId = localStorage.getItem("id").toString();
     if (action === 'Начать') {
       if (id === "substno"){
-        window.open(channelUrl, '_blank');
+        window.Telegram.WebApp.openTelegramLink(channelUrl);
         setTimeout(()=>{
-          checkUserSubcription(userId)
+          checkUserSubcription(userId, username)
         }, 5000);
       }
     }
   };
+
+  useEffect(() => {
+    const checkAllTasks = async () => {
+      try {
+        const response = await checkTasks(telegramId);
+        
+        if (!response) {
+          throw new Error(`HTTP error! Status: ${response}`);
+        }
+        if(response.isSubscribed){
+          if (id === "substno") {
+            setIsCompleted(true);
+          }
+        }
+      } catch (err) {
+        console.log(err.message);
+      } finally {
+        console.log('')
+      }
+    };
+
+    checkAllTasks();
+  }, []);
+  useEffect(() => {
+    const checkUserInvite = async () => {
+      try {
+        const response = await checkInvite(telegramId, username);
+        
+        if (!response) {
+          throw new Error(`HTTP error! Status: ${response}`);
+        }
+        if(response.isInvite){
+          if (id === "frens") {
+            setIsCompleted(true);
+          }
+        }
+      } catch (err) {
+        console.log(err.message);
+      } finally {
+        console.log('')
+      }
+    };
+
+    checkUserInvite();
+  }, []);
 
   return (
     // border-b-2 border-b-[#1f1f1f]
@@ -102,12 +153,14 @@ function Earns() {
                             <ul>
                               <TaskItem
                                 Icon={<Telegram size={35} color='white' />}
+                                colorBg="#ffff"
                                 title="Подписаться на канал"
                                 id="substno"
                                 reward="+ 3,000 TNO"
                                 action="Начать"
                                 completed={false}
                               />
+                              
                             </ul>
                           </li>
                         </ul>

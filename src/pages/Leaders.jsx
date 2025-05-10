@@ -1,15 +1,20 @@
 import { Navigation } from "../components/Navigation/Navigation";
 import {useState, useEffect} from 'react';
 import { getUserLeaders } from "../http/UserAPI";
+import { getSquadLiders } from "../http/SquadAPI.js";
 import { trophy, goldM, silverM, bronzeM, profileImage} from "../assets/images";
+import { useNavigate } from 'react-router-dom';
 // import withMobileCheck from '../components/withMobileCheck';
 
 
 function Leaders(){
+    const navigate = useNavigate();
     const [topUsers, setTopUsers] = useState([]);
+    const [topSquads, setTopSquads] = useState([]);
+
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [activeTab, setActiveTab] = useState('Сквады');
+    const [activeTab, setActiveTab] = useState('Игроки');
 
     // Данные для топа игроков
     useEffect(() => {
@@ -39,113 +44,145 @@ function Leaders(){
       fetchTopUsers();
     }, []);
 
-    // Рендер содержимого
-    // const renderTable = () => {
-    //     if (topUsers.length === 0) {
-    //       return <div className={styles.empty}>Нет данных для отображения</div>;
-    //   }
-    // }
-    // if (loading) {
-    //   return <div className={styles.loading}>Loading... <FaCoins className={styles.spinner} /></div>;
-    // }
-  
-    // if (error) {
-    //   return <div className={styles.error}>Error: {error}</div>;
-    // }
-
     // Данные для топа сквадов
-    const squadsData = [
-      { rank: 1, username: 'Squad Alpha', balance: 200000},
-      { rank: 2, username: 'Squad Beta', balance: 150000},
-      { rank: 3, username: 'Squad Gamma', balance: 120000},
-      { rank: 4, username: 'Squad Delta', balance: 100000},
-    ];
+    useEffect(() => {
+      const fetchTopSquads = async () => {
+        try {
+          const response = await getSquadLiders();
+          
+          if (!response) {
+            throw new Error(`HTTP error! Status: ${response}`);
+          }
+          
+          // Гарантируем, что data - массив
+          if (!Array.isArray(response.data)) {
+            throw new Error('Invalid data format from server');
+          }
+  
+          setTopSquads(response.data);
+          setError(null);
+        } catch (err) {
+          setError(err.message);
+          setTopSquads([]); // Сбрасываем до пустого массива при ошибке
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      fetchTopSquads();
+    }, []);
 
+    const handleSelectItem = (id, isSquads, ind) => {
+      if (isSquads === 'Сквады'){
+        localStorage.setItem("Squad", id)
+        localStorage.setItem("Index", ind)
+        navigate("/squadprofile");
+      }else {
+        console.log(2);
+      }
+    };
 
     // Выбор данных в зависимости от активной вкладки
-    const data = activeTab === 'Сквады' ? squadsData : topUsers;
+    const filteredUser = topUsers.filter(obj => 
+      !Object.values(obj).some(val => val === 0)
+    );
+    const filteredSquad = topSquads.filter(obj => 
+      !Object.values(obj).some(val => val === 0)
+    );
+    if (activeTab === 'Игроки'){
+      var data = filteredUser;
+    }else if (activeTab === 'Сквады'){
+      data = filteredSquad
+    }
+
     return (
-        <div className='min-h-screen bg-gradient-main px-4 flex flex-col items-center text-white font-medium'>
-            <div className='absolute inset-0 h-1/2 bg-gradient-overlay z-0'></div>
-            <div className='absolute inset-0 flex item-center justify-center z-0'></div>
+      <div className='min-h-screen bg-gradient-main px-4 flex flex-col items-center text-white font-medium'>
+          <div className='w-full z-10 flex flex-col items-center flex-1'>
+              {/* Основной контент */}
+              <div className="w-full max-w-2xl flex-1 flex flex-col justify-center py-4 ">
+                  {/* Заголовок и кнопки */} 
+                  <div className="mb-4 space-y-4 px-2">
+                      <div className="flex flex-col items-center space-y-2">
+                          <img 
+                              src={trophy} 
+                              className="w-16 h-16 md:w-20 md:h-20"
+                              alt="Трофей"
+                          />
+                          <h1 className="text-2xl md:text-3xl font-bold">Лидеры</h1>
+                      </div>
 
-            <div className='w-full z-10 min-h-screen flex flex-col items-center text-white'>
-                <div className='fixed bottom-0 left-0 w-full z-10'>
-                    <Navigation />
-                </div>
-                <div className="min-h-screen w-full flex items-center justify-center">
-                  <div className="w-full space-y-4">
-                    {/* Заголовок "Лидеры" */}
-                    <div className="p-4 flex flex-col items-center justify-center">
-                      <img src={trophy} width={79} height={79}/>
-                      <h1 className="text-3xl font-bold text-white">Лидеры</h1>
-                    </div>
-
-                    {/* Кнопки переключения вкладок */}
-                    <div className="bg-[#121212] py-1 px-1 rounded-lg flex justify-center space-x-4">
-                      <button
-                        className={`px-4 py-2 w-full rounded-lg text-2xl font-normal transition ${
-                          activeTab === 'Сквады' ? 'bg-[#1a1a1a] borderTabButton' : 'bg-[#121212]'
-                        }`}
-                        onClick={() => setActiveTab('Сквады')}
-                      >
-                        Сквады
-                      </button>
-                      <button
-                        className={`px-4 py-2 w-full rounded-lg text-2xl font-normal transition ${
-                          activeTab === 'Игроки' ? 'bg-[#1a1a1a] borderTabButton' : 'bg-[#121212]'
-                        }`}
-                        onClick={() => setActiveTab('Игроки')}
-                      >
-                        Игроки
-                      </button>
-                    </div>
-
-                    {/* Таблица лидеров */}
-                    <div className="bg-[#1d1d1d] rounded-lg p-2 space-y-4 max-h-96">
-                      {data.map((user, index) => (
-                        <div
-                          key={user.rank}
-                          className={`flex items-center justify-between p-2 rounded-lg`}
-                        >
-                          <div className="flex items-center space-x-3">
-                            <img src={profileImage}
-                              className={`w-12 h-12 rounded-lg`}
-                            />
-                            <div>
-                              <p className="text-base font-medium">{user.username}</p>
-                              <p className="text-sm text-gray-400">{user.balance} TNO</p>
-                              {/* {
-                              index === 0 ? <img src={goldM} /> :
-                              index === 1 ? <img src={silverM} /> :
-                              index === 2 ? <img src={bronzeM} /> : ""
-                              }
-                              {index > 2 ? <span className="text-white font-light">#{index + 1}</span> : ""} */}
-                            </div>
-                          </div>
-                          {/* <div className="text-sm">
-                            {entry.medal ? (
-                              <span className="text-2xl">{entry.medal}</span>
-                            ) : (
-                              <span className="bg-gray-600 px-2 py-1 rounded-full">#{user.id}</span>
-                            )}
-                          </div> */}
-                          <div className="ml-auto text-sm">
-                              {
-                              user.rank === 1 ? <img src={goldM} /> :
-                              user.rank === 2 ? <img src={silverM} /> :
-                              user.rank === 3 ? <img src={bronzeM} /> : ""
-                              }
-                              {user.rank > 3 ? <span className="text-white font-light">#{index + 1}</span> : ""}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
+                      {/* Кнопки переключения вкладок */}
+                      <div className="bg-[#000000] p-1 rounded-xl flex customBorder">
+                          {['Сквады', 'Игроки'].map((tab) => (
+                              <button
+                                  key={tab}
+                                  className={`flex-1 py-2 text-center text-lg md:text-xl transition-colors
+                                      ${activeTab === tab 
+                                          ? 'bg-[#1a1a1a] rounded-lg shadow-md' 
+                                          : 'hover:bg-[#1a1a1a]/50'}`}
+                                  onClick={() => setActiveTab(tab)}
+                              >
+                                  {tab}
+                              </button>
+                          ))}
+                      </div>
                   </div>
-                </div>
-            </div>
-        </div>
-    )
+
+                  {/* Контейнер таблицы с фиксированной высотой */}
+                  <div className="flex-1 flex flex-col px-2 z-50">
+                      <div className="bg-[#1d1d1d] rounded-xl flex-1 flex flex-col">
+                          {/* Scrollable area */}
+                          <div className="overflow-y-auto max-h-[60vh]">
+                              {data.map((user, index) => (
+                                  <div
+                                      key={user.id}
+                                      className="flex items-center justify-between p-3 mx-2 my-1 rounded-lg"
+                                      onClick={() => handleSelectItem(user.id, activeTab, index+1)}
+                                  >
+                                      {/* Левая часть */}
+                                      <div className="flex items-center flex-1 min-w-0">
+                                          <img 
+                                              src={profileImage}
+                                              className="w-10 h-10 md:w-12 md:h-12 rounded-lg mr-3"
+                                              alt="Профиль"
+                                          />
+                                          <div className="min-w-0">
+                                              <p className="text-base md:text-lg font-medium truncate">
+                                                  {user.username || user.name}
+                                              </p>
+                                              <p className="text-sm md:text-base text-gray-400">
+                                                  {user.balance || user.totalCount} TNO
+                                              </p>
+                                          </div>
+                                      </div>
+
+                                      {/* Правая часть */}
+                                      <div className="ml-2">
+                                          {index < 3 ? (
+                                              <img 
+                                                  src={[goldM, silverM, bronzeM][index]}
+                                                  alt="Медаль"
+                                              />
+                                          ) : (
+                                              <span className="text-gray-400 text-sm md:text-base">
+                                                  #{index + 1}
+                                              </span>
+                                          )}
+                                      </div>
+                                  </div>
+                              ))}
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+          {/* Навигация */}
+          <div className='w-full mt-auto fixed bottom-0 left-0 z-10'>
+              <Navigation />
+          </div>
+      </div>
+  )
 }
 
 
