@@ -2,8 +2,10 @@ import { useEffect, useState, useRef } from 'react'
 import { highVoltage} from '../assets/images'
 import { Navigation } from '../components/Navigation/Navigation'
 import axios from 'axios'
+import {getIdentification} from '../http/UserAPI';
+import {getClanMain} from '../http/SquadAPI';
 
-const API_URL = 'https://tnocoin.ru/api';
+const API_URL = 'http://localhost:4000/api';
 
 function Home() {
     const [coins, setCoins] = useState(0);
@@ -11,6 +13,9 @@ function Home() {
     const [clickPosition, setClickPosition] = useState({x: 0, y: 0});
     const [animations, setAnimations] = useState([]);
     const [coinTexts, setCoinTexts] = useState([]);
+    const [clanId, setClanId] = useState()
+    const [nameClan, setClanName] = useState('')
+    const [clanTotalCount, setClanCount] = useState('')
 
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -29,13 +34,13 @@ function Home() {
 
 
     
-    // const telegramId = "1083689910"; // надо поставить id пользователя из бд
-    // const username = "qwqwqrw";
-    const telegramId = localStorage.getItem("id").toString();
-    const username = localStorage.getItem("username").toString();
+    const telegramId = "1083689910"; // надо поставить id пользователя из бд
+    const username = "qwqwqrw";
+    // const telegramId = localStorage.getItem("id").toString();
+    // const username = localStorage.getItem("username").toString();
 
     const connectWebSocket = () => {
-      const ws = new WebSocket('wss://tnocoin.ru/ws');
+      const ws = new WebSocket('ws://localhost:8176');
   
       ws.onopen = () => {
         console.log('WebSocket connected');
@@ -69,7 +74,7 @@ function Home() {
 
     // Функция для синхронизации с сервером
     const syncWithServer = async (id) => {
-      const response = await fetch(`https://tnocoin.ru/api/energy/user/${id}/click`, {
+      const response = await fetch(`http://localhost:4000/api/energy/user/${id}/click`, {
         method: 'POST'
       });
       if (response.ok) {
@@ -95,6 +100,26 @@ function Home() {
       };
       
       fetchData();
+    }, []);
+
+    useEffect(() => {
+      const fetchDataUsername = async (username) => {
+        try {
+          const response = await getIdentification(username);
+          setClanId(response.id);
+          console.log(clanId)
+          const clanCreator = await getClanMain(clanId);
+          setClanName(clanCreator.data.name)
+          setClanCount(clanCreator.data.totalCount)
+          setIsLoading(false);
+        } catch (err) {
+          console.error('Error loading clan id:', err);
+          setError('Failed to load data');
+          setIsLoading(false);
+        }
+      };
+      
+      fetchDataUsername(username);
     }, []);
 
       // Анимация клика
@@ -270,11 +295,11 @@ function Home() {
                     <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
                       <span className="text-black font-bold text-lg">TNO</span>
                     </div>
-                    <span className="text-white font-medium text-base">TNO community</span>
+                    <span className="text-white font-medium text-base">{nameClan}</span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <div className="w-2 h-2 bg-[#4a9be2] rounded-full"></div>
-                    <span className="text-white font-medium text-base">100,000,000</span>
+                    <span className="text-white font-medium text-base">{clanTotalCount}</span>
                   </div>
                 </div>
               </div>

@@ -1,4 +1,5 @@
 import { getSquadInfo } from "../../../http/SquadAPI";
+import { getUsersInfo, leaveSquad } from "../../../http/UserAPI";
 import {useState, useEffect} from 'react';
 import { goldM, silverM, bronzeM, profileImage} from "../../../assets/images";
 import { Navigation } from "../../../components/Navigation/Navigation";
@@ -9,12 +10,15 @@ function Profile() {
   const [balanceSquad, setBalanceSquad] = useState(null);
   const [countMembers, setCountMembers] = useState(0);
   const [squadName, setSquadName] = useState('TNO community');
+  const [userClanId, setUserClanId] = useState(false);
+  const [leaveData, setLeaveData] = useState(false)
 
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const clanId = Number(localStorage.getItem("Squad"));
-
+  const telegramId = "1083689910"; // надо поставить id пользователя из бд
+  const username = "qwqwqrw";
   const Index = localStorage.getItem("Index")
 
   // Данные сквада
@@ -46,6 +50,36 @@ function Profile() {
     
         fetchSquadInfo(clanId);
   }, []);
+
+  useEffect(() => {
+        const fetchDataUsername = async (username) => {
+          try {
+            const response = await getUsersInfo(username);
+            if (response.clanId){
+              setUserClanId(true)
+              if(response.clanId === clanId){
+                setLeaveData(true)
+              }
+            }
+          } catch (err) {
+            console.error('Error loading user:', err);
+            setError('Failed to load data');
+          }
+        };
+        
+        fetchDataUsername(username);
+  }, []);
+
+  const leaveButtonFunc = async () => {
+    try {
+      const response = await leaveSquad(telegramId);
+      console.log(response);
+    } catch (err) {
+        console.error('Error loading user:', err);
+        setError('Failed to load data');
+    }
+  }
+
 
   const topPlayers = topUsers?.topUsers || [];
   // const balanceSquad = topUsers[0].totalCount;
@@ -100,6 +134,16 @@ function Profile() {
               Присоединяйтесь к нашей команде! Получайте бонусы за выполнение заданий, участвуйте в акциях и улучшайте свои навыки. Вместе мы достигнем большего!
               <br/><span className="text-zinc-500"> #КомандаМечты #Награды</span>
             </p>
+            {userClanId ? (
+              <></>
+            ) : (
+              <button className="bg-[#0088cc] text-white text-3xl font-normal py-3 px-8 rounded-xl w-full transition duration-200">Вступить в сквад</button>
+            )}
+            {leaveData ? (
+              <button className="bg-[#a02b2b] text-white text-3xl font-normal py-3 px-8 rounded-xl w-full transition duration-200" onClick={leaveButtonFunc}>Выйти из сквада</button>
+            ) : (
+              <></>
+            )}
         </div>
 
         {/* Content Section */}

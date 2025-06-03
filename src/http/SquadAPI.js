@@ -9,3 +9,8 @@ export const getSquadInfo = async (clanId) => {
     const data = await $host.get(`api/clans/info/${clanId}`)
     return data
 }
+
+export const getClanMain = async (creatorId) => {
+    const data = await $host.get(`api/identification/claninfo/${creatorId}`)
+    return data
+}
