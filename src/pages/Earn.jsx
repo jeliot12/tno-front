@@ -9,9 +9,11 @@ import Telegram from '../assets/Icon/Telegram';
 function TaskItem({ Icon, colorBg, title, id, reward, action, completed }) {
   const [isCompleted, setIsCompleted] = useState(completed);
 
-  const telegramId = localStorage.getItem("id").toString();
+  const telegramId = "1083689910";
+  // const telegramId = localStorage.getItem("id").toString();
   const userId = Number(telegramId);
-  const username = localStorage.getItem("username").toString();
+  const username = "qwqwqrw";
+  // const username = localStorage.getItem("username").toString();
 
   const checkUserSubcription = async (userId, username)=> {
     const data = await checkSubscribe(userId, username);
@@ -26,6 +28,21 @@ function TaskItem({ Icon, colorBg, title, id, reward, action, completed }) {
     }
   }
 
+  const checkUserInvite = async (td, un) => {
+      try {
+        const response = await checkInvite(td, un);
+        
+        if (!response) {
+          throw new Error(`HTTP error! Status: ${response}`);
+        }
+        console.log(response.message);
+      } catch (err) {
+        console.log(err.message);
+      } finally {
+        console.log('')
+      }
+    };
+
   const handleAction = () => {
     const channelUrl = 'https://t.me/tno_community';
     //const userId = localStorage.getItem("id").toString();
@@ -34,6 +51,11 @@ function TaskItem({ Icon, colorBg, title, id, reward, action, completed }) {
         window.Telegram.WebApp.openTelegramLink(channelUrl);
         setTimeout(()=>{
           checkUserSubcription(userId, username)
+        }, 5000);
+      }
+      else if (id === "frens"){
+        setTimeout(()=>{
+          checkUserInvite(telegramId, username)
         }, 5000);
       }
     }
@@ -51,25 +73,7 @@ function TaskItem({ Icon, colorBg, title, id, reward, action, completed }) {
           if (id === "substno") {
             setIsCompleted(true);
           }
-        }
-      } catch (err) {
-        console.log(err.message);
-      } finally {
-        console.log('')
-      }
-    };
-
-    checkAllTasks();
-  }, []);
-  useEffect(() => {
-    const checkUserInvite = async () => {
-      try {
-        const response = await checkInvite(telegramId, username);
-        
-        if (!response) {
-          throw new Error(`HTTP error! Status: ${response}`);
-        }
-        if(response.isInvite){
+        }else if(response.isInvite){
           if (id === "frens") {
             setIsCompleted(true);
           }
@@ -81,7 +85,7 @@ function TaskItem({ Icon, colorBg, title, id, reward, action, completed }) {
       }
     };
 
-    checkUserInvite();
+    checkAllTasks();
   }, []);
 
   return (

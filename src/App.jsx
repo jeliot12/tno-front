@@ -5,16 +5,16 @@ import Leaders from "./pages/Leaders"
 import Frens from "./pages/Frens"
 import Squad from "./pages/squads/Squad"
 import Earns from "./pages/Earn"
-import Auth from "./pages/Auth"
-import Test from "./pages/Test"
-import Profile from "./pages/squads/squadprofile/profile"
+// import Auth from "./pages/Auth"
+// import Test from "./pages/Test"
+import Profile from "./pages/squads/squadprofile/Profile"
 
 function App() {
 
   return (
       <Routes>
         <Route path="/" element={
-            <Auth />
+            <Home />
           } />
         <Route path="/home" element={
             <Home />

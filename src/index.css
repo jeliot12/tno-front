@@ -2,6 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
+/* add the code bellow */ 
+@layer utilities {
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+      display: none;
+  }
+ /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none;  /* Firefox */
+  }
+}
+@layer components {
+  @media (pointer: coarse) {
+    .coinBtn {
+      @apply touch-manipulation;
+    }
+  }
+}
+
 @font-face {
   font-family: "SF pro"; 
   src: url("./assets/fonts/SFProText-Regular.ttf") format("truetype"); 
@@ -26,19 +46,6 @@ button:focus, button:active {
 /* Отключить события для SVG */
 svg {
   pointer-events: none;
-}
-
-/* add the code bellow */ 
-@layer utilities {
-  /* Hide scrollbar for Chrome, Safari and Opera */
-  .no-scrollbar::-webkit-scrollbar {
-      display: none;
-  }
- /* Hide scrollbar for IE, Edge and Firefox */
-  .no-scrollbar {
-      -ms-overflow-style: none;  /* IE and Edge */
-      scrollbar-width: none;  /* Firefox */
-}
 }
 
 body {
@@ -87,14 +94,6 @@ body {
 .coinBtn {
   touch-action: manipulation;
   user-select: none; /* Запрет выделения текста */
-}
-
-@layer components {
-  @media (pointer: coarse) {
-    .coinBtn {
-      @apply touch-manipulation;
-    }
-  }
 }
 
 .coinDisabled {

@@ -60,3 +60,18 @@ export const checkInvite = async (telegramId, username) => {
     const {data} = await $host.get('api/check/invite', {telegramId, username})
     return data
 }
+
+export const getIdentification = async (username) => {
+    const {data} = await $host.get(`api/identification/${username}/id`);
+    return data
+}
+
+export const getUsersInfo = async (username) => {
+    const {data} = await $host.get(`api/identification/getinfo${username}`);
+    return data
+}
+
+export const leaveSquad = async (telegramId) => {
+    const {data} = await $host.post('api/clans/leave', {telegramId});
+    return data
+}
